@@ -1,0 +1,248 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { 
+  Box, Container, Typography, Grid as Grid, 
+  Button, Card, CardContent, CardMedia, Paper, Stack 
+} from '@mui/material';
+import Link from 'next/link';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import StarIcon from '@mui/icons-material/Star';
+import StorefrontIcon from '@mui/icons-material/Storefront';
+
+// Mock data for featured products
+const featuredProducts = [
+  { id: 1, title: 'Premium Wireless Buds', price: 99, image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=500', rating: 4.8 },
+  { id: 2, title: 'Classic Leather Watch', price: 150, image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=500', rating: 4.9 },
+  { id: 3, title: 'Smart Coffee Mug', price: 45, image: 'https://images.unsplash.com/photo-1517142089942-ba376ce32a2e?q=80&w=500', rating: 4.7 },
+  { id: 4, title: 'Portable Power Bank', price: 60, image: 'https://images.unsplash.com/photo-1609091839311-d536819bc248?q=80&w=500', rating: 4.6 },
+];
+
+export default function HomePage() {
+  const [marketplaceProducts, setMarketplaceProducts] = useState<any[]>([]);
+  const [marketplaceLoading, setMarketplaceLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      setIsLoggedIn(!!token);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const fetchMarketplaceProducts = async () => {
+        setMarketplaceLoading(true);
+        try {
+          const response = await fetch(`${apiBase}/api/products`);
+          if (response.ok) {
+            const data = await response.json();
+            setMarketplaceProducts(data);
+          } else {
+            console.error('Failed to fetch marketplace products from homepage');
+          }
+        } catch (error) {
+          console.error('Homepage fetch error:', error);
+        } finally {
+          setMarketplaceLoading(false);
+        }
+      };
+
+      fetchMarketplaceProducts();
+    }
+  }, [apiBase, isLoggedIn]);
+
+  return (
+    <Box>
+      {/* 1. HERO SECTION */}
+      <Paper 
+        elevation={0} 
+        sx={{ 
+          bgcolor: '#f0f4fb', 
+          py: { xs: 8, md: 12 }, 
+          borderRadius: 0,
+          mb: 8 
+        }}
+      >
+        <Container maxWidth="lg">
+          <Grid container spacing={4} alignItems="center">
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Typography variant="overline" color="primary" fontWeight="bold" sx={{ letterSpacing: 2 }}>
+                SUMMER COLLECTION 2026
+              </Typography>
+              <Typography variant="h1" sx={{ fontWeight: 800, fontSize: { xs: '2.5rem', md: '4rem' }, mb: 2, lineHeight: 1.2 }}>
+                Shop the Best <br />
+                <span style={{ color: '#1976d2' }}>Tech & Style</span>
+              </Typography>
+              <Typography variant="h6" color="text.secondary" sx={{ mb: 4, fontWeight: 400 }}>
+                Discover the latest arrivals in electronics, fashion, and home essentials. 
+                Free shipping on all orders over $50.
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <Button 
+                  variant="contained" 
+                  size="large" 
+                  component={Link} 
+                  href="/categories"
+                  sx={{ borderRadius: 8, px: 4, py: 1.5 }}
+                >
+                  Shop Now
+                </Button>
+                <Button 
+                  variant="outlined" 
+                  size="large" 
+                  component={Link} 
+                  href="/deals"
+                  sx={{ borderRadius: 8, px: 4, py: 1.5 }}
+                >
+                  View Deals
+                </Button>
+              </Stack>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }} sx={{ display: { xs: 'none', md: 'block' } }}>
+              <Box 
+                component="img" 
+                src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800"
+                sx={{ width: '100%', borderRadius: 8, boxShadow: 20 }}
+              />
+            </Grid>
+          </Grid>
+        </Container>
+      </Paper>
+
+      {/* 2. FEATURED PRODUCTS SECTION */}
+      <Container maxWidth="lg" sx={{ mb: 8 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="flex-end" mb={4}>
+          <Box>
+            <Typography variant="h4" fontWeight="bold">Featured Products</Typography>
+            <Typography color="text.secondary">Handpicked for your style</Typography>
+          </Box>
+          <Button component={Link} href="/whats-new" endIcon={<ArrowForwardIcon />}>
+            See All
+          </Button>
+        </Box>
+
+        <Grid container spacing={3}>
+          {featuredProducts.map((product) => (
+            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product.id}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 4, transition: '0.3s', '&:hover': { boxShadow: 6 } }}>
+                <CardMedia
+                  component="img"
+                  height="250"
+                  image={product.image}
+                  alt={product.title}
+                  sx={{ objectFit: 'cover' }}
+                />
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Stack direction="row" alignItems="center" spacing={0.5} mb={1}>
+                    <StarIcon sx={{ color: '#ffc107', fontSize: 18 }} />
+                    <Typography variant="body2" fontWeight="bold">{product.rating}</Typography>
+                  </Stack>
+                  <Typography variant="subtitle1" fontWeight="bold" noWrap>{product.title}</Typography>
+                  <Typography variant="h6" color="primary" fontWeight="bold" sx={{ mt: 1 }}>
+                    ${product.price}
+                  </Typography>
+                  <Button 
+                    fullWidth 
+                    variant="outlined" 
+                    size="small" 
+                    sx={{ mt: 2, borderRadius: 2 }}
+                    component={Link}
+                    href={`/product/${product.id}`}
+                  >
+                    Add to Cart
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
+      {/* 3. MARKETPLACE LISTINGS SECTION */}
+      <Container maxWidth="lg" sx={{ mb: 8 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="flex-end" mb={4}>
+          <Box>
+            <Typography variant="h4" fontWeight="bold">Latest Marketplace Listings</Typography>
+            <Typography color="text.secondary">Fresh items from sellers in the community</Typography>
+          </Box>
+          <Button component={Link} href="/marketplace" endIcon={<ArrowForwardIcon />}>
+            Browse Marketplace
+          </Button>
+        </Box>
+
+        {!isLoggedIn ? (
+          <Paper elevation={0} sx={{ p: 6, textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 4 }}>
+            <StorefrontIcon sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
+            <Typography variant="h4" fontWeight="bold" gutterBottom>
+              Join the Marketplace
+            </Typography>
+            <Typography color="text.secondary" mb={4}>
+              Log in to view and browse marketplace items from our community sellers.
+            </Typography>
+            <Stack spacing={2}>
+              <Button variant="contained" size="large" component={Link} href="/login" sx={{ borderRadius: 8 }}>
+                Log In to View Items
+              </Button>
+              <Button variant="text" component={Link} href="/signup">
+                Don't have an account? Sign Up
+              </Button>
+            </Stack>
+          </Paper>
+        ) : marketplaceLoading ? (
+          <Box textAlign="center" py={8}>
+            <Typography variant="h6">Loading latest marketplace items...</Typography>
+          </Box>
+        ) : marketplaceProducts.length === 0 ? (
+          <Box textAlign="center" py={8}>
+            <Typography variant="h6" color="text.secondary">
+              No marketplace products yet. Upload your first item in the marketplace.
+            </Typography>
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {marketplaceProducts.slice(0, 4).map((product: any) => (
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product._id}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 4, transition: '0.3s', '&:hover': { boxShadow: 6 } }}>
+                  <CardMedia
+                    component="img"
+                    height="250"
+                    image={product.image || 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=800'}
+                    alt={product.title}
+                    sx={{ objectFit: 'cover' }}
+                  />
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography variant="subtitle1" fontWeight="bold" noWrap>
+                      {product.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" noWrap>
+                      {product.description}
+                    </Typography>
+                    <Typography variant="h6" color="primary" fontWeight="bold" sx={{ mt: 1 }}>
+                      ${product.price}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1 }}>
+                      Seller: {product.seller?.name || 'Community'}
+                    </Typography>
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      size="small"
+                      sx={{ mt: 2, borderRadius: 2 }}
+                      component={Link}
+                      href="/marketplace"
+                    >
+                      View Marketplace
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </Container>
+    </Box>
+  );
+}
