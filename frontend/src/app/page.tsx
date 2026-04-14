@@ -7,19 +7,22 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import StarIcon from '@mui/icons-material/Star';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 
-// Mock data for featured products
-const featuredProducts = [
-  { id: 1, title: 'Premium Wireless Buds', price: 99, image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=500', rating: 4.8 },
-  { id: 2, title: 'Classic Leather Watch', price: 150, image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=500', rating: 4.9 },
-  { id: 3, title: 'Smart Coffee Mug', price: 45, image: 'https://images.unsplash.com/photo-1517142089942-ba376ce32a2e?q=80&w=500', rating: 4.7 },
-  { id: 4, title: 'Portable Power Bank', price: 60, image: 'https://images.unsplash.com/photo-1609091839311-d536819bc248?q=80&w=500', rating: 4.6 },
-];
+type Product = {
+  _id: string;
+  title: string;
+  price: string | number;
+  description: string;
+  address?: string;
+  image?: string;
+  seller?: {
+    name?: string;
+  };
+};
 
 export default function HomePage() {
-  const [marketplaceProducts, setMarketplaceProducts] = useState<any[]>([]);
+  const [marketplaceProducts, setMarketplaceProducts] = useState<Product[]>([]);
   const [marketplaceLoading, setMarketplaceLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
@@ -38,7 +41,7 @@ export default function HomePage() {
         try {
           const response = await fetch(`${apiBase}/api/products`);
           if (response.ok) {
-            const data = await response.json();
+            const data = await response.json() as Product[];
             setMarketplaceProducts(data);
           } else {
             console.error('Failed to fetch marketplace products from homepage');
@@ -85,19 +88,19 @@ export default function HomePage() {
                   variant="contained" 
                   size="large" 
                   component={Link} 
-                  href="/categories"
+                  href="/marketplace"
                   sx={{ borderRadius: 8, px: 4, py: 1.5 }}
                 >
-                  Shop Now
+                  Browse Marketplace
                 </Button>
                 <Button 
                   variant="outlined" 
                   size="large" 
                   component={Link} 
-                  href="/deals"
+                  href="/account"
                   sx={{ borderRadius: 8, px: 4, py: 1.5 }}
                 >
-                  View Deals
+                  My Account
                 </Button>
               </Stack>
             </Grid>
@@ -111,55 +114,6 @@ export default function HomePage() {
           </Grid>
         </Container>
       </Paper>
-
-      {/* 2. FEATURED PRODUCTS SECTION */}
-      <Container maxWidth="lg" sx={{ mb: 8 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-end" mb={4}>
-          <Box>
-            <Typography variant="h4" fontWeight="bold">Featured Products</Typography>
-            <Typography color="text.secondary">Handpicked for your style</Typography>
-          </Box>
-          <Button component={Link} href="/whats-new" endIcon={<ArrowForwardIcon />}>
-            See All
-          </Button>
-        </Box>
-
-        <Grid container spacing={3}>
-          {featuredProducts.map((product) => (
-            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product.id}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 4, transition: '0.3s', '&:hover': { boxShadow: 6 } }}>
-                <CardMedia
-                  component="img"
-                  height="250"
-                  image={product.image}
-                  alt={product.title}
-                  sx={{ objectFit: 'cover' }}
-                />
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Stack direction="row" alignItems="center" spacing={0.5} mb={1}>
-                    <StarIcon sx={{ color: '#ffc107', fontSize: 18 }} />
-                    <Typography variant="body2" fontWeight="bold">{product.rating}</Typography>
-                  </Stack>
-                  <Typography variant="subtitle1" fontWeight="bold" noWrap>{product.title}</Typography>
-                  <Typography variant="h6" color="primary" fontWeight="bold" sx={{ mt: 1 }}>
-                    ${product.price}
-                  </Typography>
-                  <Button 
-                    fullWidth 
-                    variant="outlined" 
-                    size="small" 
-                    sx={{ mt: 2, borderRadius: 2 }}
-                    component={Link}
-                    href={`/product/${product.id}`}
-                  >
-                    Add to Cart
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
 
       {/* 3. MARKETPLACE LISTINGS SECTION */}
       <Container maxWidth="lg" sx={{ mb: 8 }}>
@@ -203,7 +157,7 @@ export default function HomePage() {
           </Box>
         ) : (
           <Grid container spacing={3}>
-            {marketplaceProducts.slice(0, 4).map((product: any) => (
+            {marketplaceProducts.slice(0, 4).map((product: Product) => (
               <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product._id}>
                 <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 4, transition: '0.3s', '&:hover': { boxShadow: 6 } }}>
                   <CardMedia

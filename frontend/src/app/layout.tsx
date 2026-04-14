@@ -28,8 +28,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'Categories', href: '/categories' },
-    { label: 'Deals', href: '/deals' },
-    { label: 'Delivery', href: '/delivery' },
     { label: 'Whats New', href: '/whats-new' },
     { label: 'Marketplace', href: '/marketplace'}
   ];

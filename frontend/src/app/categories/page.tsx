@@ -1,97 +1,59 @@
 'use client';
 
 import React from 'react';
-import { 
-  Box, Container, Typography, Grid, Card, 
-  CardContent, CardMedia, CardActionArea 
-} from '@mui/material';
+import { Box, Container, Typography, Card, CardContent, CardMedia, Button } from '@mui/material';
 import Link from 'next/link';
 
 // Mock data for categories
 const categories = [
-  { 
-    title: 'Electronics', 
-    image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=500', 
-    href: '/categories/electronics',
-    itemCount: '120+ Products'
-  },
-  { 
-    title: 'Fashion', 
-    image: 'https://images.unsplash.com/photo-1445205170230-053b830c6050?q=80&w=500', 
-    href: '/categories/fashion',
-    itemCount: '350+ Products'
-  },
-  { 
-    title: 'Home & Garden', 
-    image: 'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?q=80&w=500', 
-    href: '/categories/home',
-    itemCount: '80+ Products'
-  },
-  { 
-    title: 'Sports', 
-    image: 'https://images.unsplash.com/photo-1461896756913-c8b40e7246c2?q=80&w=500', 
-    href: '/categories/sports',
-    itemCount: '150+ Products'
-  },
-  { 
-    title: 'Beauty', 
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=500', 
-    href: '/categories/beauty',
-    itemCount: '200+ Products'
-  },
-  { 
-    title: 'Toys', 
-    image: 'https://images.unsplash.com/photo-1532330393533-443990a51d10?q=80&w=500', 
-    href: '/categories/toys',
-    itemCount: '90+ Products'
-  },
+  { title: 'Electronics', description: 'Phones, gadgets, and accessories.', image: 'https://images.unsplash.com/photo-1510557880182-3d4d3c0f3667?q=80&w=800' },
+  { title: 'Fashion', description: 'Trendy clothes, shoes, and jewelry.', image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=800' },
+  { title: 'Home', description: 'Decor, furniture, and kitchen essentials.', image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800' },
+  { title: 'Sports', description: 'Fitness gear, outdoor equipment, and more.', image: 'https://images.unsplash.com/photo-1526401485004-914a2f35aa0e?q=80&w=800' },
 ];
 
 export default function CategoriesPage() {
   return (
     <Container maxWidth="lg" sx={{ py: 8 }}>
-      <Box mb={6}>
-        <Typography variant="h3" fontWeight="bold" gutterBottom>
-          Shop by Category
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Select a category to find the best deals and newest products.
-        </Typography>
-      </Box>
+      <Typography variant="h3" fontWeight="bold" gutterBottom>
+        Categories
+      </Typography>
+      <Typography color="text.secondary" mb={6}>
+        Explore the categories and discover items from our marketplace sellers.
+      </Typography>
 
-      <Grid container spacing={4}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(4, minmax(0, 1fr))' },
+          gap: 3,
+        }}
+      >
         {categories.map((category) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={category.title}>
-            <Card 
-              sx={{ 
-                borderRadius: 4, 
-                transition: 'transform 0.3s ease-in-out, box-shadow 0.3s',
-                '&:hover': { 
-                  transform: 'translateY(-8px)',
-                  boxShadow: 10 
-                } 
-              }}
-            >
-              <CardActionArea component={Link} href={category.href}>
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={category.image}
-                  alt={category.title}
-                />
-                <CardContent sx={{ textAlign: 'center', py: 3 }}>
-                  <Typography variant="h5" fontWeight="bold" gutterBottom>
-                    {category.title}
-                  </Typography>
-                  <Typography variant="body2" color="primary">
-                    {category.itemCount}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
+          <Card key={category.title} sx={{ borderRadius: 4, overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <CardMedia
+              component="img"
+              height="180"
+              image={category.image}
+              alt={category.title}
+              sx={{ objectFit: 'cover' }}
+            />
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                {category.title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {category.description}
+              </Typography>
+            </CardContent>
+            <Box sx={{ p: 2, pt: 0 }}>
+              <Button component={Link} href="/marketplace" variant="outlined" fullWidth sx={{ borderRadius: 2 }}>
+                Browse {category.title}
+              </Button>
+            </Box>
+          </Card>
         ))}
-      </Grid>
+      </Box>
     </Container>
   );
 }

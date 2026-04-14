@@ -10,12 +10,24 @@ import Link from 'next/link';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 
+type Product = {
+  _id: string;
+  title: string;
+  price: string | number;
+  description: string;
+  address: string;
+  image?: string;
+  seller?: {
+    name?: string;
+  };
+};
+
 export default function MarketplacePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success' | '', text: string }>({ type: '', text: '' });
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(false);
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'; 
 
@@ -44,10 +56,24 @@ export default function MarketplacePage() {
   const fetchProducts = async () => {
     setProductsLoading(true);
     try {
-      const response = await fetch(`${apiBase}/api/products`);
+      const token = localStorage.getItem('token');
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${apiBase}/api/products`, {
+        headers,
+      });
+
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json() as Product[];
         setProducts(data);
+      } else if (response.status === 401) {
+        console.warn('Unauthorized when fetching marketplace products');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setIsLoggedIn(false);
       }
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -87,15 +113,31 @@ export default function MarketplacePage() {
         data.append('image', formData.image);
       }
 
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setMessage({ type: 'error', text: 'You must be logged in to upload an item.' });
+        setSubmitting(false);
+        return;
+      }
+
       const response = await fetch(`${apiBase}/api/products`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${token}`,
         },
         body: data,
       });
 
       const result = await response.json();
+
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setIsLoggedIn(false);
+        setMessage({ type: 'error', text: 'Session expired. Please log in again.' });
+        setSubmitting(false);
+        return;
+      }
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Item listed successfully!' });
@@ -167,7 +209,7 @@ export default function MarketplacePage() {
             </Paper>
           ) : (
             <Grid container spacing={3}>
-              {products.map((product: any) => (
+              {products.map((product: Product) => (
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} key={product._id}>
                   <Paper elevation={2} sx={{ borderRadius: 3, overflow: 'hidden', height: '100%' }}>
                     {product.image ? (
@@ -391,7 +433,7 @@ export default function MarketplacePage() {
           </Paper>
         ) : (
           <Grid container spacing={3}>
-            {products.map((product: any) => (
+            {products.map((product: Product) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={product._id}>
                 <Paper elevation={2} sx={{ borderRadius: 3, overflow: 'hidden', height: '100%' }}>
                   {product.image ? (
