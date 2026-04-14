@@ -25,7 +25,7 @@ export default function HomePage() {
   const [marketplaceProducts, setMarketplaceProducts] = useState<Product[]>([]);
   const [marketplaceLoading, setMarketplaceLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const apiBase = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

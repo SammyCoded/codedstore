@@ -29,7 +29,7 @@ export default function MarketplacePage() {
   const [message, setMessage] = useState<{ type: 'error' | 'success' | '', text: string }>({ type: '', text: '' });
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(false);
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'; 
+  const apiBase = process.env.NEXT_PUBLIC_API_URL;
 
   // Form State
   const [formData, setFormData] = useState({
