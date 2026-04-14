@@ -23,6 +23,9 @@ async function connectDB() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      maxPoolSize: 5,
+      minPoolSize: 1,
+      socketTimeoutMS: 45000,
     };
 
     console.log("⏳ Attempting to connect to MongoDB...");
