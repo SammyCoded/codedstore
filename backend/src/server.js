@@ -14,12 +14,13 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,                // From Vercel environment variables
   'http://localhost:3000',
   'http://localhost:3001',
-].filter(Boolean); // Removes empty values
+].filter(Boolean) // Removes empty values
+ .map(origin => origin.replace(/\/$/, "")); // Removes trailing slashes
 
-// 2. Configure CORS (Only one block!)
+// 2. Configure CORS (single block only)
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
+    // Allow requests with no origin (like curl, mobile apps)
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin)) {
@@ -34,13 +35,10 @@ app.use(cors({
   credentials: true,
 }));
 
-// 3. Handle preflight (OPTIONS) requests
-app.options('*', cors());
-
-// 4. Standard Middleware
+// 3. Standard Middleware
 app.use(express.json());
 
-// 5. Routes
+// 4. Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 
@@ -48,7 +46,7 @@ app.get('/api/test', (req, res) => {
   res.json({ success: true, message: "Backend is officially connected!" });
 });
 
-// 6. Start the Server
+// 5. Start the Server
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
