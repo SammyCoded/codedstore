@@ -4,21 +4,28 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Box, Container, Paper, Typography, TextField, 
-  Button, Link as MuiLink, IconButton, InputAdornment, Alert
+  Button, Link as MuiLink, IconButton, InputAdornment, Alert,
+  Stack, CircularProgress
 } from '@mui/material';
 import Link from 'next/link';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-// Add this import if you get an error with 'Stack'
-import { Stack } from '@mui/material';
+
+// ✅ Strips trailing slash from env variable to prevent double slash bug
+const getApiBase = () => {
+  const url = process.env.NEXT_PUBLIC_API_URL || 'https://backendcstore.vercel.app';
+  return url.endsWith('/') ? url.slice(0, -1) : url;
+};
 
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'info' | 'success' | 'warning' | '', text: string }>({ type: '', text: '' });
-  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  
+  const apiBase = getApiBase(); 
+
   const [lastUser, setLastUser] = useState<{ name?: string; email?: string } | null>(null);
 
   useEffect(() => {
@@ -27,13 +34,16 @@ export default function LoginPage() {
       if (token) {
         const userStr = localStorage.getItem('user');
         if (userStr) {
-          setLastUser(JSON.parse(userStr));
+          try {
+            setLastUser(JSON.parse(userStr)); 
+          } catch {
+            localStorage.removeItem('user'); 
+          }
         }
       }
     }
   }, []);
 
-  // Form State
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -48,12 +58,10 @@ export default function LoginPage() {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-  // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle Form Submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -62,24 +70,34 @@ export default function LoginPage() {
     try {
       const response = await fetch(`${apiBase}/api/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json', 
+        },
+        credentials: 'include', 
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get('content-type');
+      const data = contentType?.includes('application/json')
+        ? await response.json()
+        : { message: await response.text() };
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Login successful! Redirecting...' });
-        // Store token and user data
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        if (data.token) localStorage.setItem('token', data.token);
+        if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
         setTimeout(() => router.push('/'), 1500);
       } else {
-        setMessage({ type: 'error', text: data.message || 'Login failed' });
+        setMessage({ type: 'error', text: data.message || 'Login failed. Check your credentials.' });
       }
     } catch (error) {
       console.error('Login error:', error);
-      setMessage({ type: 'error', text: 'Connection error. Please try again.' });
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        setMessage({ type: 'error', text: 'Unable to reach server. Check your connection or CORS settings.' });
+      } else {
+        setMessage({ type: 'error', text: 'Something went wrong. Please try again.' });
+      }
     } finally {
       setLoading(false);
     }
@@ -87,7 +105,6 @@ export default function LoginPage() {
 
   return (
     <Container maxWidth="xs" sx={{ mt: 8 }}>
-      {/* Back Button */}
       <Button 
         component={Link} 
         href="/" 
@@ -153,6 +170,7 @@ export default function LoginPage() {
                   required
                   type="email"
                   name="email"
+                  autoComplete="email" // ✅ Added autocomplete for email
                   value={formData.email}
                   onChange={handleChange}
                 />
@@ -164,16 +182,19 @@ export default function LoginPage() {
                   required
                   type={showPassword ? 'text' : 'password'}
                   name="password"
+                  autoComplete="current-password" // ✅ Added autocomplete for password
                   value={formData.password}
                   onChange={handleChange}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={handleClickShowPassword} edge="end">
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleClickShowPassword} edge="end">
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }
                   }}
                 />
 
@@ -183,7 +204,6 @@ export default function LoginPage() {
                   </MuiLink>
                 </Box>
 
-                {/* Status Message */}
                 {message.text && message.type && (
                   <Alert severity={message.type} sx={{ mb: 2 }}>
                     {message.text}
@@ -198,7 +218,7 @@ export default function LoginPage() {
                   sx={{ py: 1.5, borderRadius: 8, fontWeight: 'bold' }}
                   disabled={loading}
                 >
-                  {loading ? 'Logging In...' : 'Log In'}
+                  {loading ? <CircularProgress size={24} color="inherit" /> : 'Log In'}
                 </Button>
               </Stack>
             </form>
@@ -217,4 +237,3 @@ export default function LoginPage() {
     </Container>
   );
 }
-

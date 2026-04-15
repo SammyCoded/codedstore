@@ -12,12 +12,19 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+// ✅ Fallback URL in case env variable is missing or has trailing slash
+const getApiBase = () => {
+  const url = process.env.NEXT_PUBLIC_API_URL || 'https://backendcstore.vercel.app';
+  return url.endsWith('/') ? url.slice(0, -1) : url; // strips trailing slash if present
+};
+
 export default function SignUpPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'info' | 'success' | 'warning' | '', text: string }>({ type: '', text: '' });
-  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  
+  const apiBase = getApiBase(); 
 
   // 1. Form State
   const [formData, setFormData] = useState({
@@ -42,21 +49,33 @@ export default function SignUpPage() {
     try {
       const response = await fetch(`${apiBase}/api/auth/signup`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json', 
+        },
+        credentials: 'include', 
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get('content-type');
+      const data = contentType?.includes('application/json') 
+        ? await response.json() 
+        : { message: await response.text() };
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Account created! Redirecting...' });
-        setTimeout(() => router.push('/'), 1500);
+        setMessage({ type: 'success', text: 'Account created! Redirecting to login...' });
+        // Optional: you can store the user data here too if your API returns it
+        setTimeout(() => router.push('/login'), 1500);
       } else {
         setMessage({ type: 'error', text: data.message || 'Signup failed' });
       }
     } catch (error) {
       console.error('Signup error:', error);
-      setMessage({ type: 'error', text: 'Connection error. Please try again.' });
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        setMessage({ type: 'error', text: 'Unable to reach server. Check your CORS settings or connection.' });
+      } else {
+        setMessage({ type: 'error', text: 'Something went wrong. Please try again.' });
+      }
     } finally {
       setLoading(false);
     }
@@ -66,11 +85,11 @@ export default function SignUpPage() {
     <Container maxWidth="xs" sx={{ mt: 4, mb: 4 }}>
       <Button 
         component={Link} 
-        href="/account" 
+        href="/login" // Changed to point back to login or store
         startIcon={<ArrowBackIcon />} 
         sx={{ mb: 2, color: 'text.secondary' }}
       >
-        Back to Account
+        Back to Login
       </Button>
 
       <Paper elevation={6} sx={{ p: 4, borderRadius: 4 }}>
@@ -91,10 +110,11 @@ export default function SignUpPage() {
           <Stack spacing={2.5}>
             <TextField
               label="Full Name"
-              name="name" // Matches state key
+              name="name"
               variant="outlined"
               fullWidth
               required
+              autoComplete="name" // ✅ Added
               value={formData.name}
               onChange={handleChange}
             />
@@ -106,6 +126,7 @@ export default function SignUpPage() {
               variant="outlined"
               fullWidth
               required
+              autoComplete="email" // ✅ Added
               value={formData.email}
               onChange={handleChange}
             />
@@ -117,17 +138,20 @@ export default function SignUpPage() {
               variant="outlined"
               fullWidth
               required
+              autoComplete="new-password" // ✅ Added "new-password" specifically for signup
               value={formData.password}
               onChange={handleChange}
               helperText="Must be at least 8 characters"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleClickShowPassword} edge="end">
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }
               }}
             />
 
