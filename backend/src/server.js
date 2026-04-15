@@ -9,18 +9,19 @@ const app = express();
 
 // 1. Define your allowed origins clearly
 const allowedOrigins = [
-  'https://codedstorefrontend.vercel.app', // Your current live frontend
+  'https://codedstorefrontend.vercel.app', // Live frontend
   'https://codedstore-v1e2.vercel.app',    // Fallback URL
-  process.env.FRONTEND_URL,                // From Vercel environment variables
+  process.env.FRONTEND_URL,                // From environment variables
   'http://localhost:3000',
   'http://localhost:3001',
-].filter(Boolean) // Removes empty values
- .map(origin => origin.replace(/\/$/, "")); // Removes trailing slashes
+].filter(Boolean).map(origin => origin.replace(/\/$/, "")); // Remove empty + trailing slashes
 
 // 2. Configure CORS (single block only)
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like curl, mobile apps)
+    console.log('🔎 Incoming origin:', origin); // Debug log
+
+    // Allow requests with no origin (curl, mobile apps)
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin)) {
