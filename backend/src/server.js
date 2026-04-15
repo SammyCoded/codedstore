@@ -7,34 +7,19 @@ import productsRoutes from './routes/products.js';
 
 const app = express();
 
-// 1. Define your allowed origins clearly
-const allowedOrigins = [
-  'https://codedstorefrontend.vercel.app', // Live frontend
-  'https://codedstore-v1e2.vercel.app',    // Fallback URL
-  process.env.FRONTEND_URL,                // From environment variables
-  'http://localhost:3000',
-  'http://localhost:3001',
-].filter(Boolean).map(origin => origin.replace(/\/$/, "")); // Remove empty + trailing slashes
-
-// 2. Configure CORS (single block only)
+// 1. Apply CORS at the very top
 app.use(cors({
-  origin: (origin, callback) => {
-    console.log('🔎 Incoming origin:', origin); // Debug log
-
-    // Allow requests with no origin (curl, mobile apps)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.error(`❌ CORS blocked request from: ${origin}`);
-      callback(new Error(`CORS policy: origin ${origin} not allowed`));
-    }
-  },
+  origin: 'https://codedstorefrontend.vercel.app', // your frontend domain
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
+
+// 2. Debug middleware to log origin
+app.use((req, res, next) => {
+  console.log('🔎 Origin header:', req.headers.origin);
+  next();
+});
 
 // 3. Standard Middleware
 app.use(express.json());
@@ -55,7 +40,6 @@ const startServer = async () => {
     await connectDB();
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`✅ Allowed origins:`, allowedOrigins);
     });
   } catch (error) {
     console.error('Failed to connect:', error);
