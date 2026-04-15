@@ -1,55 +1,40 @@
-import 'dotenv/config'; // This loads your .env variables automatically
+import 'dotenv/config'; 
 import express from 'express';
 import cors from 'cors';
-import connectDB from './lib/db.js'; // Remember the .js extension!
+import connectDB from './lib/db.js'; 
 import authRoutes from './routes/auth.js';
 import productsRoutes from './routes/products.js';
 
 const app = express();
 
-const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:3000',
-  'http://localhost:3001',
-];
-
-// Configure CORS for local frontend development
-app.use(cors({ 
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+// --- REPLACED CORS BLOCK START ---
+app.use(cors({
+  origin: 'https://codedstorefrontend.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+// --- REPLACED CORS BLOCK END ---
 
-// Middleware to parse JSON data
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 
-// 3. Your Test Route
 app.get('/api/test', (req, res) => {
-  console.log("Frontend just knocked on the door!");
-  res.json({ 
-    success: true,
-    message: "Backend is officially connected!",
-    timestamp: new Date().toISOString()
-  });
+  res.json({ success: true, message: "Backend is officially connected!" });
 });
 
-// 4. Start the Server
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
     await connectDB();
-    console.log('📦 Connected to MongoDB');
-    
     app.listen(PORT, () => {
-      console.log(`🚀 Server is flying at http://localhost:${PORT}`);
-      console.log(`👉 Test the API here: http://localhost:${PORT}/api/test`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   } catch (error) {
-    console.error('Failed to connect to MongoDB:', error);
+    console.error('Failed to connect:', error);
     process.exit(1);
   }
 };
