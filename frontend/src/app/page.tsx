@@ -141,7 +141,7 @@ export default function HomePage() {
                 Log In to View Items
               </Button>
               <Button variant="text" component={Link} href="/signup">
-                Don't have an account? Sign Up
+                Don t have an account? Sign Up
               </Button>
             </Stack>
           </Paper>

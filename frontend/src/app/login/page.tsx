@@ -12,9 +12,9 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-// ✅ Strips trailing slash from env variable to prevent double slash bug
+// ✅ Updated to your specific Render URL
 const getApiBase = () => {
-  const url = process.env.NEXT_PUBLIC_API_URL || 'https://backendcstore.vercel.app';
+  const url = process.env.NEXT_PUBLIC_API_URL || 'https://codedstore.onrender.com';
   return url.endsWith('/') ? url.slice(0, -1) : url;
 };
 
@@ -65,7 +65,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage({ type: '', text: '' });
+    setMessage({ type: 'info', text: 'Connecting to server...' }); // Info message for Render spin-up
 
     try {
       const response = await fetch(`${apiBase}/api/auth/login`, {
@@ -74,7 +74,7 @@ export default function LoginPage() {
           'Content-Type': 'application/json',
           'Accept': 'application/json', 
         },
-        credentials: 'include', 
+        // Removed credentials: 'include' since you are using LocalStorage tokens
         body: JSON.stringify(formData),
       });
 
@@ -93,11 +93,11 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error('Login error:', error);
-      if (error instanceof TypeError && error.message === 'Failed to fetch') {
-        setMessage({ type: 'error', text: 'Unable to reach server. Check your connection or CORS settings.' });
-      } else {
-        setMessage({ type: 'error', text: 'Something went wrong. Please try again.' });
-      }
+      // Helpful tip for Render Free Tier users
+      setMessage({ 
+        type: 'error', 
+        text: 'Server is waking up or unreachable. Please wait 30 seconds and try again.' 
+      });
     } finally {
       setLoading(false);
     }
@@ -170,7 +170,7 @@ export default function LoginPage() {
                   required
                   type="email"
                   name="email"
-                  autoComplete="email" // ✅ Added autocomplete for email
+                  autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
                 />
@@ -182,7 +182,7 @@ export default function LoginPage() {
                   required
                   type={showPassword ? 'text' : 'password'}
                   name="password"
-                  autoComplete="current-password" // ✅ Added autocomplete for password
+                  autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
                   slotProps={{

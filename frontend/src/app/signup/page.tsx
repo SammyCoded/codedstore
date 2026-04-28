@@ -12,10 +12,10 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-// ✅ Fallback URL in case env variable is missing or has trailing slash
+// ✅ Updated to point to your Render Backend
 const getApiBase = () => {
-  const url = process.env.NEXT_PUBLIC_API_URL || 'https://backendcstore.vercel.app';
-  return url.endsWith('/') ? url.slice(0, -1) : url; // strips trailing slash if present
+  const url = process.env.NEXT_PUBLIC_API_URL || 'https://codedstore.onrender.com';
+  return url.endsWith('/') ? url.slice(0, -1) : url;
 };
 
 export default function SignUpPage() {
@@ -26,7 +26,6 @@ export default function SignUpPage() {
   
   const apiBase = getApiBase(); 
 
-  // 1. Form State
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,16 +34,14 @@ export default function SignUpPage() {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-  // 2. Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 3. Handle Form Submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage({ type: '', text: '' });
+    setMessage({ type: 'info', text: 'Connecting to server...' });
 
     try {
       const response = await fetch(`${apiBase}/api/auth/signup`, {
@@ -53,7 +50,8 @@ export default function SignUpPage() {
           'Content-Type': 'application/json',
           'Accept': 'application/json', 
         },
-        credentials: 'include', 
+        // Removed credentials: 'include'—standard signup usually doesn't need it
+        // unless you're setting a session cookie immediately.
         body: JSON.stringify(formData),
       });
 
@@ -64,18 +62,17 @@ export default function SignUpPage() {
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Account created! Redirecting to login...' });
-        // Optional: you can store the user data here too if your API returns it
-        setTimeout(() => router.push('/login'), 1500);
+        // We wait slightly longer (2 seconds) so they can read the success message
+        setTimeout(() => router.push('/login'), 2000);
       } else {
         setMessage({ type: 'error', text: data.message || 'Signup failed' });
       }
     } catch (error) {
       console.error('Signup error:', error);
-      if (error instanceof TypeError && error.message === 'Failed to fetch') {
-        setMessage({ type: 'error', text: 'Unable to reach server. Check your CORS settings or connection.' });
-      } else {
-        setMessage({ type: 'error', text: 'Something went wrong. Please try again.' });
-      }
+      setMessage({ 
+        type: 'error', 
+        text: 'Server is waking up or unreachable. Please try again in 30 seconds.' 
+      });
     } finally {
       setLoading(false);
     }
@@ -85,7 +82,7 @@ export default function SignUpPage() {
     <Container maxWidth="xs" sx={{ mt: 4, mb: 4 }}>
       <Button 
         component={Link} 
-        href="/login" // Changed to point back to login or store
+        href="/login" 
         startIcon={<ArrowBackIcon />} 
         sx={{ mb: 2, color: 'text.secondary' }}
       >
@@ -114,7 +111,7 @@ export default function SignUpPage() {
               variant="outlined"
               fullWidth
               required
-              autoComplete="name" // ✅ Added
+              autoComplete="name"
               value={formData.name}
               onChange={handleChange}
             />
@@ -126,7 +123,7 @@ export default function SignUpPage() {
               variant="outlined"
               fullWidth
               required
-              autoComplete="email" // ✅ Added
+              autoComplete="email"
               value={formData.email}
               onChange={handleChange}
             />
@@ -138,10 +135,12 @@ export default function SignUpPage() {
               variant="outlined"
               fullWidth
               required
-              autoComplete="new-password" // ✅ Added "new-password" specifically for signup
+              autoComplete="new-password"
               value={formData.password}
               onChange={handleChange}
-              helperText="Must be at least 8 characters"
+              // Added a check to ensure user knows password requirements
+              helperText={formData.password.length > 0 && formData.password.length < 8 ? "Password is too short" : "Minimum 8 characters"}
+              error={formData.password.length > 0 && formData.password.length < 8}
               slotProps={{
                 input: {
                   endAdornment: (
@@ -159,7 +158,7 @@ export default function SignUpPage() {
               control={<Checkbox required size="small" />}
               label={
                 <Typography variant="body2">
-                  I agree to the <MuiLink href="#">Terms & Conditions</MuiLink>
+                  I agree to the <MuiLink href="#" underline="hover">Terms & Conditions</MuiLink>
                 </Typography>
               }
             />
@@ -169,7 +168,7 @@ export default function SignUpPage() {
               variant="contained" 
               fullWidth 
               size="large" 
-              disabled={loading}
+              disabled={loading || formData.password.length < 8}
               sx={{ py: 1.5, borderRadius: 8, fontWeight: 'bold' }}
             >
               {loading ? <CircularProgress size={24} color="inherit" /> : 'Create Account'}
