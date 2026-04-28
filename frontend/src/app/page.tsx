@@ -1,4 +1,13 @@
-import { useState, useEffect } from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { 
+  Box, Container, Typography, Grid as Grid, 
+  Button, Card, CardContent, CardMedia, Paper, Stack 
+} from '@mui/material';
+import Link from 'next/link';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 
 type Product = {
   _id: string;
@@ -16,123 +25,178 @@ export default function HomePage() {
   const [marketplaceProducts, setMarketplaceProducts] = useState<Product[]>([]);
   const [marketplaceLoading, setMarketplaceLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
   const apiBase = process.env.NEXT_PUBLIC_API_URL;
 
-  // Check login status on mount
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    setIsLoggedIn(!!token);
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      setIsLoggedIn(!!token);
+    }
   }, []);
 
   useEffect(() => {
-    // Prevent fetching if not logged in or API URL is missing
-    if (!isLoggedIn || !apiBase) return;
-
-    const fetchMarketplaceProducts = async () => {
-      setMarketplaceLoading(true);
-      try {
-        const response = await fetch(`${apiBase}/api/products`, {
-          headers: {
-            // It's good practice to send the token if your backend requires it
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+    if (isLoggedIn) {
+      const fetchMarketplaceProducts = async () => {
+        setMarketplaceLoading(true);
+        try {
+          const response = await fetch(`${apiBase}/api/products`);
+          if (response.ok) {
+            const data = await response.json() as Product[];
+            setMarketplaceProducts(data);
+          } else {
+            console.error('Failed to fetch marketplace products from homepage');
           }
-        });
-        
-        if (response.ok) {
-          const data = await response.json() as Product[];
-          setMarketplaceProducts(data);
-        } else {
-          console.error('Fetch failed with status:', response.status);
+        } catch (error) {
+          console.error('Homepage fetch error:', error);
+        } finally {
+          setMarketplaceLoading(false);
         }
-      } catch (error) {
-        console.error('Homepage fetch error:', error);
-      } finally {
-        setMarketplaceLoading(false);
-      }
-    };
+      };
 
-    fetchMarketplaceProducts();
+      fetchMarketplaceProducts();
+    }
   }, [apiBase, isLoggedIn]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setIsLoggedIn(false);
-    setMarketplaceProducts([]);
-  };
-
   return (
-    <main style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Marketplace</h1>
-        {isLoggedIn && (
-          <button onClick={handleLogout} style={{ padding: '8px 16px', cursor: 'pointer' }}>
-            Logout
-          </button>
-        )}
-      </header>
-
-      <hr />
-
-      {/* Loading State */}
-      {marketplaceLoading && (
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <p>Scanning the shelves for products...</p>
-        </div>
-      )}
-
-      {/* Not Logged In State */}
-      {!isLoggedIn && !marketplaceLoading && (
-        <div style={{ textAlign: 'center', padding: '50px' }}>
-          <h2>Welcome to CodedStore</h2>
-          <p>Please log in to browse the marketplace.</p>
-          <a href="/login"><button style={{ padding: '10px 20px' }}>Go to Login</button></a>
-        </div>
-      )}
-
-      {/* Empty State */}
-      {isLoggedIn && marketplaceProducts.length === 0 && !marketplaceLoading && (
-        <p style={{ textAlign: 'center' }}>No products available right now. Check back later!</p>
-      )}
-
-      {/* Product Grid */}
-      <section 
-        style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', 
-          gap: '20px',
-          marginTop: '20px' 
+    <Box>
+      {/* 1. HERO SECTION */}
+      <Paper 
+        elevation={0} 
+        sx={{ 
+          bgcolor: '#f0f4fb', 
+          py: { xs: 8, md: 12 }, 
+          borderRadius: 0,
+          mb: 8 
         }}
       >
-        {marketplaceProducts.map((product) => (
-          <article 
-            key={product._id} 
-            style={{ 
-              border: '1px solid #ddd', 
-              borderRadius: '8px', 
-              padding: '15px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}
-          >
-            {product.image && (
-               // eslint-disable-next-line @next/next/no-img-element
-               <img 
-                 src={product.image} 
-                 alt={product.title} 
-                 style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '4px' }} 
-               />
-            )}
-            <h3>{product.title}</h3>
-            <p style={{ color: '#666', fontSize: '0.9rem' }}>{product.description.substring(0, 100)}...</p>
-            <p style={{ fontWeight: 'bold', color: '#2ecc71' }}>
-              ${typeof product.price === 'number' ? product.price.toLocaleString() : product.price}
-            </p>
-            {product.seller?.name && (
-              <small>Seller: {product.seller.name}</small>
-            )}
-          </article>
-        ))}
-      </section>
-    </main>
+        <Container maxWidth="lg">
+          <Grid container spacing={4} alignItems="center">
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Typography variant="overline" color="primary" fontWeight="bold" sx={{ letterSpacing: 2 }}>
+                SUMMER COLLECTION 2026
+              </Typography>
+              <Typography variant="h1" sx={{ fontWeight: 800, fontSize: { xs: '2.5rem', md: '4rem' }, mb: 2, lineHeight: 1.2 }}>
+                Shop the Best <br />
+                <span style={{ color: '#1976d2' }}>Tech & Style</span>
+              </Typography>
+              <Typography variant="h6" color="text.secondary" sx={{ mb: 4, fontWeight: 400 }}>
+                Discover the latest arrivals in electronics, fashion, and home essentials. 
+                Free shipping on all orders over $50.
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <Button 
+                  variant="contained" 
+                  size="large" 
+                  component={Link} 
+                  href="/marketplace"
+                  sx={{ borderRadius: 8, px: 4, py: 1.5 }}
+                >
+                  Browse Marketplace
+                </Button>
+                <Button 
+                  variant="outlined" 
+                  size="large" 
+                  component={Link} 
+                  href="/account"
+                  sx={{ borderRadius: 8, px: 4, py: 1.5 }}
+                >
+                  My Account
+                </Button>
+              </Stack>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }} sx={{ display: { xs: 'none', md: 'block' } }}>
+              <Box 
+                component="img" 
+                src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800"
+                sx={{ width: '100%', borderRadius: 8, boxShadow: 20 }}
+              />
+            </Grid>
+          </Grid>
+        </Container>
+      </Paper>
+
+      {/* 3. MARKETPLACE LISTINGS SECTION */}
+      <Container maxWidth="lg" sx={{ mb: 8 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="flex-end" mb={4}>
+          <Box>
+            <Typography variant="h4" fontWeight="bold">Latest Marketplace Listings</Typography>
+            <Typography color="text.secondary">Fresh items from sellers in the community</Typography>
+          </Box>
+          <Button component={Link} href="/marketplace" endIcon={<ArrowForwardIcon />}>
+            Browse Marketplace
+          </Button>
+        </Box>
+
+        {!isLoggedIn ? (
+          <Paper elevation={0} sx={{ p: 6, textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 4 }}>
+            <StorefrontIcon sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
+            <Typography variant="h4" fontWeight="bold" gutterBottom>
+              Join the Marketplace
+            </Typography>
+            <Typography color="text.secondary" mb={4}>
+              Log in to view and browse marketplace items from our community sellers.
+            </Typography>
+            <Stack spacing={2}>
+              <Button variant="contained" size="large" component={Link} href="/login" sx={{ borderRadius: 8 }}>
+                Log In to View Items
+              </Button>
+              <Button variant="text" component={Link} href="/signup">
+                Don t have an account? Sign Up
+              </Button>
+            </Stack>
+          </Paper>
+        ) : marketplaceLoading ? (
+          <Box textAlign="center" py={8}>
+            <Typography variant="h6">Loading latest marketplace items...</Typography>
+          </Box>
+        ) : marketplaceProducts.length === 0 ? (
+          <Box textAlign="center" py={8}>
+            <Typography variant="h6" color="text.secondary">
+              No marketplace products yet. Upload your first item in the marketplace.
+            </Typography>
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {marketplaceProducts.slice(0, 4).map((product: Product) => (
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product._id}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 4, transition: '0.3s', '&:hover': { boxShadow: 6 } }}>
+                  <CardMedia
+                    component="img"
+                    height="250"
+                    image={product.image || 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=800'}
+                    alt={product.title}
+                    sx={{ objectFit: 'cover' }}
+                  />
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography variant="subtitle1" fontWeight="bold" noWrap>
+                      {product.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" noWrap>
+                      {product.description}
+                    </Typography>
+                    <Typography variant="h6" color="primary" fontWeight="bold" sx={{ mt: 1 }}>
+                      ${product.price}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1 }}>
+                      Seller: {product.seller?.name || 'Community'}
+                    </Typography>
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      size="small"
+                      sx={{ mt: 2, borderRadius: 2 }}
+                      component={Link}
+                      href="/marketplace"
+                    >
+                      View Marketplace
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </Container>
+    </Box>
   );
 }
