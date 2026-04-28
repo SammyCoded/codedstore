@@ -9,7 +9,7 @@ const app = express();
 
 // 1. Apply CORS at the very top
 app.use(cors({
-  origin: 'https://codedstorefrontend.vercel.app', // your frontend domain
+  origin: 'https://codedstoreshop.vercel.app', // your frontend domain
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
