@@ -16,9 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => {
-    // Stop propagation to prevent accidental double-taps on mobile
-    event.stopPropagation();
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -35,21 +33,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
-      <body style={{ margin: 0 }}>
+      <body>
         <ThemeRegistry>
           <AppBar 
-            position="sticky" 
+            position="sticky" // Changed to sticky for better mobile UX
             elevation={0} 
             sx={{ 
               borderBottom: '1px solid', 
               borderColor: 'divider', 
               bgcolor: 'background.paper',
-              zIndex: 1100,
-              WebkitBackfaceVisibility: 'hidden'
+              zIndex: 1100 // High z-index to stay above page content
             }}
           >
             <Container maxWidth="lg">
-              <Toolbar disableGutters sx={{ gap: { xs: 0.5, sm: 1 } }}>
+              <Toolbar disableGutters sx={{ gap: 1 }}>
                 
                 {/* LOGO */}
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -79,7 +76,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     placeholder="Search..."
                     sx={{ 
                       maxWidth: '400px',
-                      minWidth: { xs: '100px', sm: '200px' },
+                      // Prevents search bar from crushing the menu icon on iPhone
+                      minWidth: { xs: '120px', sm: '200px' },
                       '& .MuiOutlinedInput-root': { borderRadius: '20px', bgcolor: '#f1f3f4' }
                     }}
                     InputProps={{
@@ -95,12 +93,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* DESKTOP NAV */}
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0.5, alignItems: 'center' }}>
                   {navItems.map((item) => (
-                    <Button key={item.label} component={Link} href={item.href} color="inherit" sx={{ textTransform: 'none' }}>
+                    <Button 
+                      key={item.label} 
+                      component={Link} 
+                      href={item.href} 
+                      color="inherit"
+                      sx={{ textTransform: 'none', fontWeight: 500 }}
+                    >
                       {item.label}
                     </Button>
                   ))}
-                  <Button component={Link} href="/account" color="inherit" sx={{ textTransform: 'none' }}>Account</Button>
-                  <Button component={Link} href="/cart" color="primary" variant="contained" sx={{ borderRadius: '20px', textTransform: 'none' }}>
+                  <Button component={Link} href="/account" color="inherit" sx={{ ml: 1, textTransform: 'none' }}>
+                    Account
+                  </Button>
+                  <Button component={Link} href="/cart" color="primary" variant="contained" sx={{ borderRadius: '20px', ml: 1, textTransform: 'none' }}>
                     Cart
                   </Button>
                 </Box>
@@ -108,23 +114,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* MOBILE NAV TRAY */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                   <IconButton 
-                    id="mobile-menu-button"
-                    aria-label="menu"
-                    aria-controls={open ? 'mobile-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    // FIXED: Changed onClick from {navItems} back to {handleOpenMenu}
                     onClick={handleOpenMenu} 
-                    onTouchStart={(e) => {
-                       if (e.type === 'touchstart') handleOpenMenu(e);
-                    }}
-                    color="primary"
+                    color="primary" // Changed color to make it stand out
                     sx={{ 
-                      p: 1.2, 
-                      bgcolor: '#f1f3f4',
-                      cursor: 'pointer', 
-                      pointerEvents: 'auto',
-                      WebkitTapHighlightColor: 'transparent', 
+                      p: 1.5, // Larger tap target for fingers
+                      bgcolor: '#f1f3f4', // Subtle background to show it's a button
                       '&:active': { bgcolor: '#e0e0e0' } 
                     }}
                   >
@@ -132,36 +126,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </IconButton>
                   
                   <Menu
-                    id="mobile-menu"
                     anchorEl={anchorEl}
                     open={open}
                     onClose={handleCloseMenu}
                     disableScrollLock
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                    slotProps={{
-                      paper: {
-                        sx: { width: '200px', mt: 1.5, borderRadius: 2, boxShadow: 3 }
-                      }
+                    PaperProps={{
+                      sx: { width: '200px', mt: 1.5, borderRadius: 2, boxShadow: 3 }
                     }}
                   >
                     {navItems.map((item) => (
-                      <MenuItem key={item.label} onClick={handleCloseMenu}>
-                        <Link 
-                          href={item.href} 
-                          style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}
-                        >
-                          {item.label}
-                        </Link>
+                      <MenuItem key={item.label} onClick={handleCloseMenu} component={Link} href={item.href}>
+                        {item.label}
                       </MenuItem>
                     ))}
                     <hr style={{ border: '0.5px solid #eee', margin: '8px 0' }} />
-                    <MenuItem onClick={handleCloseMenu}>
-                      <Link href="/account" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>Account</Link>
-                    </MenuItem>
-                    <MenuItem onClick={handleCloseMenu}>
-                      <Link href="/cart" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>Cart</Link>
-                    </MenuItem>
+                    <MenuItem onClick={handleCloseMenu} component={Link} href="/account">Account</MenuItem>
+                    <MenuItem onClick={handleCloseMenu} component={Link} href="/cart">Cart</MenuItem>
                   </Menu>
                 </Box>
 
