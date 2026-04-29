@@ -16,10 +16,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  // Use a combined handler for more responsive mobile triggers
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => {
-    event.preventDefault(); // Prevents "ghost clicks" on some mobile browsers
-    setAnchorEl(event.currentTarget);
+  // Toggle handler for mobile menu
+  const handleToggleMenu = (event: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => {
+    event.preventDefault();
+    if (open) {
+      setAnchorEl(null); // close if already open
+    } else {
+      setAnchorEl(event.currentTarget); // open if closed
+    }
   };
 
   const handleCloseMenu = () => {
@@ -50,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Container maxWidth="lg">
               <Toolbar disableGutters sx={{ gap: 1, justifyContent: 'space-between' }}>
                 
-                {/* LOGO - Now visible on all screen sizes */}
+                {/* LOGO */}
                 <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                   <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                     <ShoppingCartIcon color="primary" sx={{ fontSize: { xs: 24, sm: 28 }, mr: 0.5 }} />
@@ -59,7 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       color="primary" 
                       sx={{ 
                         fontWeight: 'bold', 
-                        fontSize: { xs: '0.9rem', sm: '1.25rem' } // Slightly smaller on mobile
+                        fontSize: { xs: '0.9rem', sm: '1.25rem' } 
                       }}
                     >
                       CODED STORE
@@ -67,13 +71,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </Link>
                 </Box>
 
-                {/* SEARCH BOX - Minimized on mobile */}
+                {/* SEARCH BOX */}
                 <Box sx={{ 
                   flexGrow: 1, 
                   display: 'flex', 
                   justifyContent: 'center',
                   px: { xs: 0.5, sm: 2 },
-                  maxWidth: { xs: '120px', sm: '400px' } // Restricts width on mobile
+                  maxWidth: { xs: '120px', sm: '400px' } 
                 }}>
                   <TextField
                     variant="outlined" 
@@ -110,12 +114,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </Button>
                 </Box>
 
-                {/* MOBILE NAV TRAY */}
+                {/* MOBILE NAV */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                   <IconButton 
-                    // onTouchStart triggers much faster on iPhones than onClick
-                    onTouchStart={handleOpenMenu}
-                    onClick={handleOpenMenu} 
+                    onClick={handleToggleMenu}
+                    onTouchStart={handleToggleMenu}
                     color="primary"
                     sx={{ 
                       p: 1, 
