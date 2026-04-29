@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import ThemeRegistry from '../components/ThemeRegistry';
 import './globals.css';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -16,12 +16,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  // Toggle handler for mobile menu
-  const handleToggleMenu = (event: React.MouseEvent<HTMLElement>) => {
+  // Ref for the menu button (fixes iOS Safari issue)
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const handleToggleMenu = () => {
     if (open) {
       setAnchorEl(null); // close if already open
     } else {
-      setAnchorEl(event.currentTarget); // open if closed
+      setAnchorEl(menuButtonRef.current); // open using ref
     }
   };
 
@@ -116,7 +118,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* MOBILE NAV */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                   <IconButton 
-                    onClick={handleToggleMenu}   // ✅ only onClick
+                    ref={menuButtonRef}   // ✅ attach ref
+                    onClick={handleToggleMenu}
                     color="primary"
                     sx={{ 
                       p: 1, 
