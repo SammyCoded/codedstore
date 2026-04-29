@@ -16,8 +16,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  // Optimized for both Mouse and Touch
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => {
+    // Stop propagation to prevent accidental double-taps on mobile
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
@@ -44,7 +45,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               borderColor: 'divider', 
               bgcolor: 'background.paper',
               zIndex: 1100,
-              // Fixes "flicker" on some iPhones during scroll
               WebkitBackfaceVisibility: 'hidden'
             }}
           >
@@ -105,23 +105,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </Button>
                 </Box>
 
-                {/* MOBILE NAV TRAY - THE IPHONE FIX */}
+                {/* MOBILE NAV TRAY */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                   <IconButton 
                     id="mobile-menu-button"
+                    aria-label="menu"
+                    aria-controls={open ? 'mobile-menu' : undefined}
                     aria-haspopup="true"
-                    // TRIGGER 1: Standard click
+                    aria-expanded={open ? 'true' : undefined}
+                    // FIXED: Changed onClick from {navItems} back to {handleOpenMenu}
                     onClick={handleOpenMenu} 
-                    // TRIGGER 2: Immediate touch (The iPhone secret weapon)
                     onTouchStart={(e) => {
-                       // Only trigger if it's a touch to avoid double-firing
                        if (e.type === 'touchstart') handleOpenMenu(e);
                     }}
                     color="primary"
                     sx={{ 
                       p: 1.2, 
                       bgcolor: '#f1f3f4',
-                      // TRIGGER 3: Essential CSS for Safari
                       cursor: 'pointer', 
                       pointerEvents: 'auto',
                       WebkitTapHighlightColor: 'transparent', 
@@ -132,13 +132,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </IconButton>
                   
                   <Menu
+                    id="mobile-menu"
                     anchorEl={anchorEl}
                     open={open}
                     onClose={handleCloseMenu}
                     disableScrollLock
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                    // Use SlotProps to ensure the Paper element is reachable on touch
                     slotProps={{
                       paper: {
                         sx: { width: '200px', mt: 1.5, borderRadius: 2, boxShadow: 3 }
@@ -146,13 +146,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     }}
                   >
                     {navItems.map((item) => (
-                      <MenuItem key={item.label} onClick={handleCloseMenu} component={Link} href={item.href}>
-                        {item.label}
+                      <MenuItem key={item.label} onClick={handleCloseMenu}>
+                        <Link 
+                          href={item.href} 
+                          style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}
+                        >
+                          {item.label}
+                        </Link>
                       </MenuItem>
                     ))}
                     <hr style={{ border: '0.5px solid #eee', margin: '8px 0' }} />
-                    <MenuItem onClick={handleCloseMenu} component={Link} href="/account">Account</MenuItem>
-                    <MenuItem onClick={handleCloseMenu} component={Link} href="/cart">Cart</MenuItem>
+                    <MenuItem onClick={handleCloseMenu}>
+                      <Link href="/account" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>Account</Link>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseMenu}>
+                      <Link href="/cart" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>Cart</Link>
+                    </MenuItem>
                   </Menu>
                 </Box>
 
