@@ -16,7 +16,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+  // Optimized for both Mouse and Touch
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -33,20 +34,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
-      <body>
+      <body style={{ margin: 0 }}>
         <ThemeRegistry>
           <AppBar 
-            position="sticky" // Changed to sticky for better mobile UX
+            position="sticky" 
             elevation={0} 
             sx={{ 
               borderBottom: '1px solid', 
               borderColor: 'divider', 
               bgcolor: 'background.paper',
-              zIndex: 1100 // High z-index to stay above page content
+              zIndex: 1100,
+              // Fixes "flicker" on some iPhones during scroll
+              WebkitBackfaceVisibility: 'hidden'
             }}
           >
             <Container maxWidth="lg">
-              <Toolbar disableGutters sx={{ gap: 1 }}>
+              <Toolbar disableGutters sx={{ gap: { xs: 0.5, sm: 1 } }}>
                 
                 {/* LOGO */}
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -76,8 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     placeholder="Search..."
                     sx={{ 
                       maxWidth: '400px',
-                      // Prevents search bar from crushing the menu icon on iPhone
-                      minWidth: { xs: '120px', sm: '200px' },
+                      minWidth: { xs: '100px', sm: '200px' },
                       '& .MuiOutlinedInput-root': { borderRadius: '20px', bgcolor: '#f1f3f4' }
                     }}
                     InputProps={{
@@ -93,32 +95,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* DESKTOP NAV */}
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0.5, alignItems: 'center' }}>
                   {navItems.map((item) => (
-                    <Button 
-                      key={item.label} 
-                      component={Link} 
-                      href={item.href} 
-                      color="inherit"
-                      sx={{ textTransform: 'none', fontWeight: 500 }}
-                    >
+                    <Button key={item.label} component={Link} href={item.href} color="inherit" sx={{ textTransform: 'none' }}>
                       {item.label}
                     </Button>
                   ))}
-                  <Button component={Link} href="/account" color="inherit" sx={{ ml: 1, textTransform: 'none' }}>
-                    Account
-                  </Button>
-                  <Button component={Link} href="/cart" color="primary" variant="contained" sx={{ borderRadius: '20px', ml: 1, textTransform: 'none' }}>
+                  <Button component={Link} href="/account" color="inherit" sx={{ textTransform: 'none' }}>Account</Button>
+                  <Button component={Link} href="/cart" color="primary" variant="contained" sx={{ borderRadius: '20px', textTransform: 'none' }}>
                     Cart
                   </Button>
                 </Box>
 
-                {/* MOBILE NAV TRAY */}
+                {/* MOBILE NAV TRAY - THE IPHONE FIX */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                   <IconButton 
+                    id="mobile-menu-button"
+                    aria-haspopup="true"
+                    // TRIGGER 1: Standard click
                     onClick={handleOpenMenu} 
-                    color="primary" // Changed color to make it stand out
+                    // TRIGGER 2: Immediate touch (The iPhone secret weapon)
+                    onTouchStart={(e) => {
+                       // Only trigger if it's a touch to avoid double-firing
+                       if (e.type === 'touchstart') handleOpenMenu(e);
+                    }}
+                    color="primary"
                     sx={{ 
-                      p: 1.5, // Larger tap target for fingers
-                      bgcolor: '#f1f3f4', // Subtle background to show it's a button
+                      p: 1.2, 
+                      bgcolor: '#f1f3f4',
+                      // TRIGGER 3: Essential CSS for Safari
+                      cursor: 'pointer', 
+                      pointerEvents: 'auto',
+                      WebkitTapHighlightColor: 'transparent', 
                       '&:active': { bgcolor: '#e0e0e0' } 
                     }}
                   >
@@ -132,8 +138,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     disableScrollLock
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                    PaperProps={{
-                      sx: { width: '200px', mt: 1.5, borderRadius: 2, boxShadow: 3 }
+                    // Use SlotProps to ensure the Paper element is reachable on touch
+                    slotProps={{
+                      paper: {
+                        sx: { width: '200px', mt: 1.5, borderRadius: 2, boxShadow: 3 }
+                      }
                     }}
                   >
                     {navItems.map((item) => (
