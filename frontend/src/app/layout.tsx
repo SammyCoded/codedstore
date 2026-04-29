@@ -21,9 +21,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   const handleToggleMenu = () => {
     if (open) {
-      setAnchorEl(null); // close if already open
+      setAnchorEl(null);
     } else {
-      setAnchorEl(menuButtonRef.current); // open using ref
+      // ✅ use the ref directly
+      setAnchorEl(menuButtonRef.current);
     }
   };
 
