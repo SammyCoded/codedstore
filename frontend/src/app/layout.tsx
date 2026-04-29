@@ -16,7 +16,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+  // Use a combined handler for more responsive mobile triggers
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => {
+    event.preventDefault(); // Prevents "ghost clicks" on some mobile browsers
     setAnchorEl(event.currentTarget);
   };
 
@@ -33,41 +35,45 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
-      <body>
+      <body style={{ margin: 0 }}>
         <ThemeRegistry>
           <AppBar 
-            position="sticky" // Changed to sticky for better mobile UX
+            position="sticky" 
             elevation={0} 
             sx={{ 
               borderBottom: '1px solid', 
               borderColor: 'divider', 
               bgcolor: 'background.paper',
-              zIndex: 1100 // High z-index to stay above page content
+              zIndex: 1100 
             }}
           >
             <Container maxWidth="lg">
-              <Toolbar disableGutters sx={{ gap: 1 }}>
+              <Toolbar disableGutters sx={{ gap: 1, justifyContent: 'space-between' }}>
                 
-                {/* LOGO */}
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {/* LOGO - Now visible on all screen sizes */}
+                <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                   <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-                    <ShoppingCartIcon color="primary" sx={{ fontSize: 28, mr: 1 }} />
+                    <ShoppingCartIcon color="primary" sx={{ fontSize: { xs: 24, sm: 28 }, mr: 0.5 }} />
                     <Typography 
                       variant="h6" 
                       color="primary" 
-                      sx={{ fontWeight: 'bold', display: { xs: 'none', sm: 'block' } }}
+                      sx={{ 
+                        fontWeight: 'bold', 
+                        fontSize: { xs: '0.9rem', sm: '1.25rem' } // Slightly smaller on mobile
+                      }}
                     >
                       CODED STORE
                     </Typography>
                   </Link>
                 </Box>
 
-                {/* SEARCH BOX */}
+                {/* SEARCH BOX - Minimized on mobile */}
                 <Box sx={{ 
                   flexGrow: 1, 
                   display: 'flex', 
                   justifyContent: 'center',
-                  px: { xs: 1, sm: 2 } 
+                  px: { xs: 0.5, sm: 2 },
+                  maxWidth: { xs: '120px', sm: '400px' } // Restricts width on mobile
                 }}>
                   <TextField
                     variant="outlined" 
@@ -75,15 +81,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     fullWidth 
                     placeholder="Search..."
                     sx={{ 
-                      maxWidth: '400px',
-                      // Prevents search bar from crushing the menu icon on iPhone
-                      minWidth: { xs: '120px', sm: '200px' },
-                      '& .MuiOutlinedInput-root': { borderRadius: '20px', bgcolor: '#f1f3f4' }
+                      '& .MuiOutlinedInput-root': { 
+                        borderRadius: '20px', 
+                        bgcolor: '#f1f3f4',
+                        fontSize: { xs: '0.75rem', sm: '0.875rem' } 
+                      }
                     }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <SearchIcon fontSize="small" />
+                          <SearchIcon sx={{ fontSize: { xs: 18, sm: 20 } }} />
                         </InputAdornment>
                       ),
                     }}
@@ -93,20 +100,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* DESKTOP NAV */}
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0.5, alignItems: 'center' }}>
                   {navItems.map((item) => (
-                    <Button 
-                      key={item.label} 
-                      component={Link} 
-                      href={item.href} 
-                      color="inherit"
-                      sx={{ textTransform: 'none', fontWeight: 500 }}
-                    >
+                    <Button key={item.label} component={Link} href={item.href} color="inherit" sx={{ textTransform: 'none' }}>
                       {item.label}
                     </Button>
                   ))}
-                  <Button component={Link} href="/account" color="inherit" sx={{ ml: 1, textTransform: 'none' }}>
-                    Account
-                  </Button>
-                  <Button component={Link} href="/cart" color="primary" variant="contained" sx={{ borderRadius: '20px', ml: 1, textTransform: 'none' }}>
+                  <Button component={Link} href="/account" color="inherit" sx={{ textTransform: 'none' }}>Account</Button>
+                  <Button component={Link} href="/cart" color="primary" variant="contained" sx={{ borderRadius: '20px', textTransform: 'none' }}>
                     Cart
                   </Button>
                 </Box>
@@ -114,11 +113,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* MOBILE NAV TRAY */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                   <IconButton 
+                    // onTouchStart triggers much faster on iPhones than onClick
+                    onTouchStart={handleOpenMenu}
                     onClick={handleOpenMenu} 
-                    color="primary" // Changed color to make it stand out
+                    color="primary"
                     sx={{ 
-                      p: 1.5, // Larger tap target for fingers
-                      bgcolor: '#f1f3f4', // Subtle background to show it's a button
+                      p: 1, 
+                      bgcolor: '#f1f3f4',
+                      cursor: 'pointer',
                       '&:active': { bgcolor: '#e0e0e0' } 
                     }}
                   >
@@ -133,17 +135,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                     PaperProps={{
-                      sx: { width: '200px', mt: 1.5, borderRadius: 2, boxShadow: 3 }
+                      sx: { width: '180px', mt: 1, borderRadius: 2, boxShadow: 3 }
                     }}
                   >
                     {navItems.map((item) => (
-                      <MenuItem key={item.label} onClick={handleCloseMenu} component={Link} href={item.href}>
+                      <MenuItem 
+                        key={item.label} 
+                        onClick={handleCloseMenu} 
+                        component={Link} 
+                        href={item.href}
+                        sx={{ fontSize: '0.9rem', py: 1.5 }}
+                      >
                         {item.label}
                       </MenuItem>
                     ))}
-                    <hr style={{ border: '0.5px solid #eee', margin: '8px 0' }} />
-                    <MenuItem onClick={handleCloseMenu} component={Link} href="/account">Account</MenuItem>
-                    <MenuItem onClick={handleCloseMenu} component={Link} href="/cart">Cart</MenuItem>
+                    <hr style={{ border: '0.5px solid #eee', margin: '4px 0' }} />
+                    <MenuItem onClick={handleCloseMenu} component={Link} href="/account" sx={{ py: 1.5 }}>Account</MenuItem>
+                    <MenuItem onClick={handleCloseMenu} component={Link} href="/cart" sx={{ py: 1.5 }}>Cart</MenuItem>
                   </Menu>
                 </Box>
 
