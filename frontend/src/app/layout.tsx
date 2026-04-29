@@ -17,8 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const open = Boolean(anchorEl);
 
   // Toggle handler for mobile menu
-  const handleToggleMenu = (event: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => {
-    event.preventDefault();
+  const handleToggleMenu = (event: React.MouseEvent<HTMLElement>) => {
     if (open) {
       setAnchorEl(null); // close if already open
     } else {
@@ -117,8 +116,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* MOBILE NAV */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                   <IconButton 
-                    onClick={handleToggleMenu}
-                    onTouchStart={handleToggleMenu}
+                    onClick={handleToggleMenu}   // ✅ only onClick
                     color="primary"
                     sx={{ 
                       p: 1, 
