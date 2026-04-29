@@ -16,14 +16,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  // Ref for the menu button (fixes iOS Safari issue)
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const handleToggleMenu = () => {
     if (open) {
       setAnchorEl(null);
     } else {
-      // ✅ use the ref directly
       setAnchorEl(menuButtonRef.current);
     }
   };
@@ -43,16 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body style={{ margin: 0 }}>
         <ThemeRegistry>
-          <AppBar 
-            position="sticky" 
-            elevation={0} 
-            sx={{ 
-              borderBottom: '1px solid', 
-              borderColor: 'divider', 
-              bgcolor: 'background.paper',
-              zIndex: 1100 
-            }}
-          >
+          <AppBar position="sticky" elevation={0} sx={{ borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', zIndex: 1100 }}>
             <Container maxWidth="lg">
               <Toolbar disableGutters sx={{ gap: 1, justifyContent: 'space-between' }}>
                 
@@ -60,39 +49,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                   <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                     <ShoppingCartIcon color="primary" sx={{ fontSize: { xs: 24, sm: 28 }, mr: 0.5 }} />
-                    <Typography 
-                      variant="h6" 
-                      color="primary" 
-                      sx={{ 
-                        fontWeight: 'bold', 
-                        fontSize: { xs: '0.9rem', sm: '1.25rem' } 
-                      }}
-                    >
+                    <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold', fontSize: { xs: '0.9rem', sm: '1.25rem' } }}>
                       CODED STORE
                     </Typography>
                   </Link>
                 </Box>
 
                 {/* SEARCH BOX */}
-                <Box sx={{ 
-                  flexGrow: 1, 
-                  display: 'flex', 
-                  justifyContent: 'center',
-                  px: { xs: 0.5, sm: 2 },
-                  maxWidth: { xs: '120px', sm: '400px' } 
-                }}>
+                <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', px: { xs: 0.5, sm: 2 }, maxWidth: { xs: '120px', sm: '400px' } }}>
                   <TextField
                     variant="outlined" 
                     size="small" 
                     fullWidth 
                     placeholder="Search..."
-                    sx={{ 
-                      '& .MuiOutlinedInput-root': { 
-                        borderRadius: '20px', 
-                        bgcolor: '#f1f3f4',
-                        fontSize: { xs: '0.75rem', sm: '0.875rem' } 
-                      }
-                    }}
+                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: '20px', bgcolor: '#f1f3f4', fontSize: { xs: '0.75rem', sm: '0.875rem' } } }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -119,15 +89,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* MOBILE NAV */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                   <IconButton 
-                    ref={menuButtonRef}   // ✅ attach ref
+                    ref={menuButtonRef}
                     onClick={handleToggleMenu}
                     color="primary"
-                    sx={{ 
-                      p: 1, 
-                      bgcolor: '#f1f3f4',
-                      cursor: 'pointer',
-                      '&:active': { bgcolor: '#e0e0e0' } 
-                    }}
+                    sx={{ p: 1, bgcolor: '#f1f3f4', cursor: 'pointer', '&:active': { bgcolor: '#e0e0e0' } }}
                   >
                     <MenuIcon />
                   </IconButton>
@@ -136,12 +101,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     anchorEl={anchorEl}
                     open={open}
                     onClose={handleCloseMenu}
+                    container={document.body}   // ✅ force render inside body (iOS fix)
                     disableScrollLock
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                    PaperProps={{
-                      sx: { width: '180px', mt: 1, borderRadius: 2, boxShadow: 3 }
-                    }}
+                    PaperProps={{ sx: { width: '180px', mt: 1, borderRadius: 2, boxShadow: 3 } }}
                   >
                     {navItems.map((item) => (
                       <MenuItem 
