@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     { label: 'Home', href: '/' },
     { label: 'Categories', href: '/categories' },
     { label: 'Whats New', href: '/whats-new' },
-    { label: 'Marketplace', href: '/marketplace'},
+    { label: 'Marketplace', href: '/marketplace' },
     { label: 'Account', href: '/account' },
     { label: 'Cart', href: '/cart' }
   ];
@@ -45,9 +45,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* SEARCH BOX */}
                 <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', px: { xs: 0.5, sm: 2 }, maxWidth: { xs: '120px', sm: '400px' } }}>
                   <TextField
-                    variant="outlined" 
-                    size="small" 
-                    fullWidth 
+                    variant="outlined"
+                    size="small"
+                    fullWidth
                     placeholder="Search..."
                     sx={{ '& .MuiOutlinedInput-root': { borderRadius: '20px', bgcolor: '#f1f3f4', fontSize: { xs: '0.75rem', sm: '0.875rem' } } }}
                     InputProps={{
@@ -92,7 +92,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <List sx={{ width: 200 }}>
               {navItems.map((item) => (
                 <ListItem key={item.label} disablePadding>
-                  <ListItemButton component={Link} href={item.href} onClick={() => setDrawerOpen(false)}>
+                  <ListItemButton
+                    component={Link}
+                    href={item.href}
+                    onClick={() => setDrawerOpen(false)}
+                  >
                     <ListItemText primary={item.label} />
                   </ListItemButton>
                 </ListItem>
