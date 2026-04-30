@@ -29,20 +29,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
 
-  // useCallback so the reference is stable — avoids accidental re-renders
   const openDrawer  = useCallback(() => setDrawerOpen(true),  []);
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   const handleNavigate = useCallback((href: string) => {
-    // Close first, navigate after a tiny delay so the Drawer
-    // animation doesn't fight the page transition on iOS
     setDrawerOpen(false);
+    // Tiny delay to ensure the drawer starts closing before navigation triggers
     setTimeout(() => router.push(href), 50);
   }, [router]);
 
   return (
     <html lang="en">
-      <body>
+      <body style={{ margin: 0 }}>
         <ThemeRegistry>
           {/* ── APP BAR ──────────────────────────────────────────────── */}
           <AppBar
@@ -53,19 +51,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               borderColor: 'divider',
               bgcolor: 'background.paper',
               zIndex: (theme) => theme.zIndex.appBar,
+              // iOS Fix: Force hardware acceleration & ensure it stays on top
+              WebkitTransform: 'translateZ(0)',
+              touchAction: 'pan-y', 
             }}
           >
             <Container maxWidth="lg">
               <Toolbar disableGutters sx={{ gap: 1 }}>
 
-                {/* LOGO */}
+                {/* LOGO - Fixed to show on mobile (xs: 'flex') */}
                 <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                   <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                     <ShoppingCartIcon color="primary" sx={{ fontSize: 28, mr: 1 }} />
                     <Typography
                       variant="h6"
                       color="primary"
-                      sx={{ fontWeight: 'bold', display: { xs: 'none', sm: 'block' } }}
+                      sx={{ 
+                        fontWeight: 'bold', 
+                        display: { xs: 'block', sm: 'block' },
+                        fontSize: { xs: '0.9rem', sm: '1.25rem' } 
+                      }}
                     >
                       CODED STORE
                     </Typography>
@@ -81,7 +86,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     placeholder="Search..."
                     sx={{
                       maxWidth: '400px',
-                      minWidth: { xs: '120px', sm: '200px' },
+                      minWidth: { xs: '80px', sm: '200px' },
                       '& .MuiOutlinedInput-root': { borderRadius: '20px', bgcolor: '#f1f3f4' },
                     }}
                     InputProps={{
@@ -97,50 +102,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* DESKTOP NAV */}
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0.5, alignItems: 'center', flexShrink: 0 }}>
                   {navItems.slice(0, 4).map((item) => (
-                    <Button
-                      key={item.label}
-                      component={Link}
-                      href={item.href}
-                      color="inherit"
-                      sx={{ textTransform: 'none', fontWeight: 500 }}
-                    >
+                    <Button key={item.label} component={Link} href={item.href} color="inherit" sx={{ textTransform: 'none' }}>
                       {item.label}
                     </Button>
                   ))}
-                  <Button component={Link} href="/account" color="inherit" sx={{ ml: 1, textTransform: 'none' }}>
-                    Account
-                  </Button>
+                  <Button component={Link} href="/account" color="inherit" sx={{ ml: 1, textTransform: 'none' }}>Account</Button>
                   <Button component={Link} href="/cart" color="primary" variant="contained" sx={{ borderRadius: '20px', ml: 1, textTransform: 'none' }}>
                     Cart
                   </Button>
                 </Box>
 
-                {/* MOBILE HAMBURGER
-                    ─────────────────────────────────────────────────────────
-                    KEY FIX: We use a Drawer instead of MUI Menu.
-                    MUI Menu renders in a Portal + uses a backdrop div that
-                    swallows touch events on iOS Safari. A Drawer avoids
-                    this entire class of bugs.
-
-                    The button itself uses `sx={{ WebkitTapHighlightColor: 'transparent' }}`
-                    so iOS doesn't show the grey flash that makes it look "broken"
-                    even when it's actually working.
-                ───────────────────────────────────────────────────────── */}
+                {/* MOBILE HAMBURGER - Refined for iPhone */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', flexShrink: 0 }}>
                   <IconButton
+                    // iOS Fix: Trigger immediately on touch
+                    onTouchStart={(e) => {
+                        e.stopPropagation();
+                        openDrawer();
+                    }}
                     onClick={openDrawer}
                     color="primary"
                     aria-label="Open navigation menu"
                     sx={{
-                      p: 1.5,
+                      p: 1.2,
                       bgcolor: '#f1f3f4',
-                      // Prevents iOS from showing the grey highlight box,
-                      // which makes taps look ignored even when they work
                       WebkitTapHighlightColor: 'transparent',
-                      cursor: 'pointer',
-                      // Minimum 44×44 pt touch target (Apple HIG)
+                      cursor: 'pointer', 
                       minWidth: 44,
                       minHeight: 44,
+                      position: 'relative',
+                      zIndex: 10,
                       '&:active': { bgcolor: '#e0e0e0' },
                     }}
                   >
@@ -152,13 +143,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Container>
           </AppBar>
 
-          {/* ── MOBILE DRAWER ─────────────────────────────────────────
-              Replaces MUI Menu entirely.
-              • No Portal backdrop fighting touch events
-              • No scroll-lock conflicts
-              • Native slide animation iOS users expect
-              • Full 44pt touch targets on every row
-          ───────────────────────────────────────────────────────── */}
+          {/* ── MOBILE DRAWER ───────────────────────────────────────── */}
           <Drawer
             anchor="right"
             open={drawerOpen}
@@ -166,61 +151,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             ModalProps={{ keepMounted: true }}
             PaperProps={{
               sx: {
-                width: 240,
+                width: 280,
                 pt: 1,
-                // Render above the sticky AppBar (appBar = 1100, drawer default = 1200 ✓)
-                // but we set it explicitly to be safe
                 zIndex: (theme: Theme) => theme.zIndex.drawer + 10,
-                // Push drawer below the AppBar height so it doesn't cover the bar
-                top: 0,
                 boxShadow: '-4px 0 20px rgba(0,0,0,0.12)',
               },
             }}
           >
-            {/* Header row: title + close button — no floating icon overlap */}
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
-              <Typography variant="subtitle1" fontWeight={700} color="primary">
-                Menu
-              </Typography>
-              <IconButton
-                onClick={closeDrawer}
-                aria-label="Close menu"
-                size="small"
-                sx={{
-                  WebkitTapHighlightColor: 'transparent',
-                  color: 'text.secondary',
-                  '&:active': { bgcolor: 'action.selected' },
-                }}
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Box>
-
-            <Divider />
-
-            <List disablePadding>
-              {navItems.map((item, index) => (
-                <React.Fragment key={item.label}>
-                  {/* Divider before Account to visually separate utility links */}
-                  {index === 4 && <Divider sx={{ my: 1 }} />}
-                  <ListItem disablePadding>
-                    <ListItemButton
-                      onClick={() => handleNavigate(item.href)}
-                      sx={{
-                        py: 1.5,                            // ~48px touch target
-                        WebkitTapHighlightColor: 'transparent',
-                        '&:active': { bgcolor: 'action.selected' },
-                      }}
-                    >
-                      <ListItemText
-                        primary={item.label}
-                        primaryTypographyProps={{ fontWeight: index < 4 ? 500 : 400 }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                </React.Fragment>
-              ))}
-            </List>
+             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
+               <Typography variant="subtitle1" fontWeight={700} color="primary">Menu</Typography>
+               <IconButton onClick={closeDrawer} size="small" sx={{ WebkitTapHighlightColor: 'transparent' }}>
+                 <CloseIcon fontSize="small" />
+               </IconButton>
+             </Box>
+             <Divider />
+             <List disablePadding>
+               {navItems.map((item, index) => (
+                 <React.Fragment key={item.label}>
+                   {index === 4 && <Divider sx={{ my: 1 }} />}
+                   <ListItem disablePadding>
+                     <ListItemButton 
+                       onClick={() => handleNavigate(item.href)} 
+                       sx={{ py: 2, WebkitTapHighlightColor: 'transparent' }}
+                      >
+                       <ListItemText primary={item.label} />
+                     </ListItemButton>
+                   </ListItem>
+                 </React.Fragment>
+               ))}
+             </List>
           </Drawer>
 
           {/* ── MAIN CONTENT ────────────────────────────────────────── */}
