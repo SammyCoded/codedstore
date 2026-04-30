@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ThemeRegistry from '../components/ThemeRegistry';
 import { Theme } from '@mui/material/styles';
 import './globals.css';
@@ -27,6 +27,9 @@ const navItems = [
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
+  
+  // 1. Create a reference for the button
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const openDrawer  = useCallback(() => setDrawerOpen(true),  []);
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
@@ -35,6 +38,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     setDrawerOpen(false);
     router.push(href);
   }, [router]);
+
+  // 2. Attach a manual NON-PASSIVE listener
+  useEffect(() => {
+    const el = menuButtonRef.current;
+    if (!el) return;
+
+    const handleTap = (e: TouchEvent) => {
+      // This is now allowed because of { passive: false }
+      e.preventDefault(); 
+      e.stopPropagation();
+      openDrawer();
+    };
+
+    // Crucial: passive: false is the only way to allow preventDefault on iOS
+    el.addEventListener('touchstart', handleTap, { passive: false });
+    
+    return () => el.removeEventListener('touchstart', handleTap);
+  }, [openDrawer]);
 
   return (
     <html lang="en">
@@ -76,24 +97,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   />
                 </Box>
 
-                {/* MOBILE HAMBURGER - TAP OPTIMIZED */}
+                {/* MOBILE HAMBURGER - REF BASED TAP */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                   <IconButton
-                    // 1. THIS IS THE TAP FIX: Use onTouchStart for instant reaction
-                    onTouchStart={(e) => {
-                      e.preventDefault(); // Stop the "click" from firing 300ms later
-                      e.stopPropagation();
-                      openDrawer();
-                    }}
-                    // 2. Fallback for desktop mouse users
-                    onClick={openDrawer} 
+                    ref={menuButtonRef} // Attach the ref here
+                    onClick={openDrawer} // Desktop fallback
                     color="primary"
                     sx={{
                       p: 1.2,
                       bgcolor: '#f1f3f4',
                       cursor: 'pointer',
-                      // 3. Tells the browser not to wait for gestures (zoom/scroll)
-                      touchAction: 'none', 
+                      touchAction: 'none', // Critical for bypassing browser gesture logic
                       WebkitTapHighlightColor: 'transparent',
                     }}
                   >
@@ -110,6 +124,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             open={drawerOpen}
             onClose={closeDrawer}
             disableEnforceFocus 
+            disablePortal // Older iOS handles touches better if the drawer isn't moved to the body root
             ModalProps={{ keepMounted: true }}
             PaperProps={{
               sx: { width: 280, pt: 1, zIndex: (theme: Theme) => theme.zIndex.drawer + 100 },
@@ -117,11 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
                <Typography variant="subtitle1" fontWeight={700} color="primary">Menu</Typography>
-               <IconButton 
-                 onTouchStart={(e) => { e.preventDefault(); closeDrawer(); }} 
-                 onClick={closeDrawer} 
-                 size="small"
-               >
+               <IconButton onClick={closeDrawer} size="small">
                  <CloseIcon fontSize="small" />
                </IconButton>
              </Box>
@@ -129,11 +140,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
              <List>
                {navItems.map((item) => (
                  <ListItem key={item.label} disablePadding>
-                   <ListItemButton 
-                     onTouchStart={(e) => { e.preventDefault(); handleNavigate(item.href); }}
-                     onClick={() => handleNavigate(item.href)} 
-                     sx={{ py: 2 }}
-                   >
+                   <ListItemButton onClick={() => handleNavigate(item.href)} sx={{ py: 2 }}>
                      <ListItemText primary={item.label} />
                    </ListItemButton>
                  </ListItem>
