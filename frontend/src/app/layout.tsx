@@ -9,51 +9,81 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link';
 import { 
   Box, AppBar, Toolbar, Typography, Container, 
-  Button, TextField, InputAdornment, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText
+  Button, TextField, InputAdornment, IconButton, Menu, MenuItem 
 } from '@mui/material';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'Categories', href: '/categories' },
     { label: 'Whats New', href: '/whats-new' },
-    { label: 'Marketplace', href: '/marketplace' },
-    { label: 'Account', href: '/account' },
-    { label: 'Cart', href: '/cart' }
+    { label: 'Marketplace', href: '/marketplace'}
   ];
 
   return (
     <html lang="en">
-      <body style={{ margin: 0 }}>
+      <body>
         <ThemeRegistry>
-          <AppBar position="sticky" elevation={0} sx={{ borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', zIndex: 1100 }}>
+          <AppBar 
+            position="sticky" // Changed to sticky for better mobile UX
+            elevation={0} 
+            sx={{ 
+              borderBottom: '1px solid', 
+              borderColor: 'divider', 
+              bgcolor: 'background.paper',
+              zIndex: 1100 // High z-index to stay above page content
+            }}
+          >
             <Container maxWidth="lg">
-              <Toolbar disableGutters sx={{ gap: 1, justifyContent: 'space-between' }}>
+              <Toolbar disableGutters sx={{ gap: 1 }}>
                 
                 {/* LOGO */}
-                <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-                    <ShoppingCartIcon color="primary" sx={{ fontSize: { xs: 24, sm: 28 }, mr: 0.5 }} />
-                    <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold', fontSize: { xs: '0.9rem', sm: '1.25rem' } }}>
+                    <ShoppingCartIcon color="primary" sx={{ fontSize: 28, mr: 1 }} />
+                    <Typography 
+                      variant="h6" 
+                      color="primary" 
+                      sx={{ fontWeight: 'bold', display: { xs: 'none', sm: 'block' } }}
+                    >
                       CODED STORE
                     </Typography>
                   </Link>
                 </Box>
 
                 {/* SEARCH BOX */}
-                <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', px: { xs: 0.5, sm: 2 }, maxWidth: { xs: '120px', sm: '400px' } }}>
+                <Box sx={{ 
+                  flexGrow: 1, 
+                  display: 'flex', 
+                  justifyContent: 'center',
+                  px: { xs: 1, sm: 2 } 
+                }}>
                   <TextField
-                    variant="outlined"
-                    size="small"
-                    fullWidth
+                    variant="outlined" 
+                    size="small" 
+                    fullWidth 
                     placeholder="Search..."
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: '20px', bgcolor: '#f1f3f4', fontSize: { xs: '0.75rem', sm: '0.875rem' } } }}
+                    sx={{ 
+                      maxWidth: '400px',
+                      // Prevents search bar from crushing the menu icon on iPhone
+                      minWidth: { xs: '120px', sm: '200px' },
+                      '& .MuiOutlinedInput-root': { borderRadius: '20px', bgcolor: '#f1f3f4' }
+                    }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <SearchIcon sx={{ fontSize: { xs: 18, sm: 20 } }} />
+                          <SearchIcon fontSize="small" />
                         </InputAdornment>
                       ),
                     }}
@@ -63,45 +93,63 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* DESKTOP NAV */}
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0.5, alignItems: 'center' }}>
                   {navItems.map((item) => (
-                    <Button key={item.label} component={Link} href={item.href} color="inherit" sx={{ textTransform: 'none' }}>
+                    <Button 
+                      key={item.label} 
+                      component={Link} 
+                      href={item.href} 
+                      color="inherit"
+                      sx={{ textTransform: 'none', fontWeight: 500 }}
+                    >
                       {item.label}
                     </Button>
                   ))}
+                  <Button component={Link} href="/account" color="inherit" sx={{ ml: 1, textTransform: 'none' }}>
+                    Account
+                  </Button>
+                  <Button component={Link} href="/cart" color="primary" variant="contained" sx={{ borderRadius: '20px', ml: 1, textTransform: 'none' }}>
+                    Cart
+                  </Button>
                 </Box>
 
-                {/* MOBILE NAV */}
+                {/* MOBILE NAV TRAY */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
-                  <IconButton
-                    onClick={() => setDrawerOpen(true)}
-                    color="primary"
-                    sx={{ p: 1, bgcolor: '#f1f3f4', cursor: 'pointer', '&:active': { bgcolor: '#e0e0e0' } }}
+                  <IconButton 
+                    onClick={handleOpenMenu} 
+                    color="primary" // Changed color to make it stand out
+                    sx={{ 
+                      p: 1.5, // Larger tap target for fingers
+                      bgcolor: '#f1f3f4', // Subtle background to show it's a button
+                      '&:active': { bgcolor: '#e0e0e0' } 
+                    }}
                   >
                     <MenuIcon />
                   </IconButton>
+                  
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleCloseMenu}
+                    disableScrollLock
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    PaperProps={{
+                      sx: { width: '200px', mt: 1.5, borderRadius: 2, boxShadow: 3 }
+                    }}
+                  >
+                    {navItems.map((item) => (
+                      <MenuItem key={item.label} onClick={handleCloseMenu} component={Link} href={item.href}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                    <hr style={{ border: '0.5px solid #eee', margin: '8px 0' }} />
+                    <MenuItem onClick={handleCloseMenu} component={Link} href="/account">Account</MenuItem>
+                    <MenuItem onClick={handleCloseMenu} component={Link} href="/cart">Cart</MenuItem>
+                  </Menu>
                 </Box>
+
               </Toolbar>
             </Container>
           </AppBar>
-
-          {/* Drawer for mobile navigation */}
-          <Drawer
-            anchor="right"
-            open={drawerOpen}
-            onClose={() => setDrawerOpen(false)}
-          >
-            <List sx={{ width: 220 }}>
-              {navItems.map((item) => (
-                <ListItem key={item.label} disablePadding>
-                  <ListItemButton onClick={() => setDrawerOpen(false)}>
-                    {/* Wrap the text with Next.js Link */}
-                    <Link href={item.href} style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
-                      <ListItemText primary={item.label} />
-                    </Link>
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Drawer>
 
           <Box component="main" sx={{ minHeight: '80vh', py: { xs: 2, md: 4 } }}>
             {children}
