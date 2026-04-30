@@ -24,3 +24,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* Fixes a bug where sticky headers create an invisible 
+   layer that blocks touches on older Safari versions */
+.MuiAppBar-root {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  isolation: isolate;
+}
