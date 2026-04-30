@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import ThemeRegistry from '../components/ThemeRegistry';
+import { Theme } from '@mui/material/styles';
 import './globals.css';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
@@ -162,21 +163,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             anchor="right"
             open={drawerOpen}
             onClose={closeDrawer}
-            // ModalProps.keepMounted keeps the DOM node alive so the
-            // first tap never hits an unmounted tree
             ModalProps={{ keepMounted: true }}
             PaperProps={{
-              sx: { width: 240, pt: 1 },
+              sx: {
+                width: 240,
+                pt: 1,
+                // Render above the sticky AppBar (appBar = 1100, drawer default = 1200 ✓)
+                // but we set it explicitly to be safe
+                zIndex: (theme: Theme) => theme.zIndex.drawer + 10,
+                // Push drawer below the AppBar height so it doesn't cover the bar
+                top: 0,
+                boxShadow: '-4px 0 20px rgba(0,0,0,0.12)',
+              },
             }}
           >
-            {/* Close button row */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 1, pb: 1 }}>
+            {/* Header row: title + close button — no floating icon overlap */}
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
+              <Typography variant="subtitle1" fontWeight={700} color="primary">
+                Menu
+              </Typography>
               <IconButton
                 onClick={closeDrawer}
                 aria-label="Close menu"
-                sx={{ WebkitTapHighlightColor: 'transparent' }}
+                size="small"
+                sx={{
+                  WebkitTapHighlightColor: 'transparent',
+                  color: 'text.secondary',
+                  '&:active': { bgcolor: 'action.selected' },
+                }}
               >
-                <CloseIcon />
+                <CloseIcon fontSize="small" />
               </IconButton>
             </Box>
 
