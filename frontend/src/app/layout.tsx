@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import ThemeRegistry from '../components/ThemeRegistry';
 import { Theme } from '@mui/material/styles';
 import './globals.css';
@@ -27,9 +27,6 @@ const navItems = [
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
-  
-  // 1. Create a reference for the button
-  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const openDrawer  = useCallback(() => setDrawerOpen(true),  []);
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
@@ -38,24 +35,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     setDrawerOpen(false);
     router.push(href);
   }, [router]);
-
-  // 2. Attach a manual NON-PASSIVE listener
-  useEffect(() => {
-    const el = menuButtonRef.current;
-    if (!el) return;
-
-    const handleTap = (e: TouchEvent) => {
-      // This is now allowed because of { passive: false }
-      e.preventDefault(); 
-      e.stopPropagation();
-      openDrawer();
-    };
-
-    // Crucial: passive: false is the only way to allow preventDefault on iOS
-    el.addEventListener('touchstart', handleTap, { passive: false });
-    
-    return () => el.removeEventListener('touchstart', handleTap);
-  }, [openDrawer]);
 
   return (
     <html lang="en">
@@ -74,44 +53,56 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }}
           >
             <Container maxWidth="lg">
-              <Toolbar disableGutters sx={{ gap: 1 }}>
+              <Toolbar disableGutters sx={{ gap: { xs: 0.75, sm: 1 }, minWidth: 0 }}>
                 
                 {/* LOGO */}
-                <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, minWidth: 0 }}>
                   <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                     <ShoppingCartIcon color="primary" sx={{ fontSize: 28, mr: 1 }} />
-                    <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold', fontSize: { xs: '0.9rem', sm: '1.25rem' } }}>
+                    <Typography
+                      variant="h6"
+                      color="primary"
+                      noWrap
+                      sx={{ fontWeight: 'bold', fontSize: { xs: '0.85rem', sm: '1.25rem' } }}
+                    >
                       CODED STORE
                     </Typography>
                   </Link>
                 </Box>
 
                 {/* SEARCH */}
-                <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', px: { xs: 1, sm: 2 } }}>
+                <Box sx={{ flexGrow: 1, minWidth: 0, display: 'flex', justifyContent: 'center', px: { xs: 0.5, sm: 2 } }}>
                   <TextField
                     variant="outlined" size="small" fullWidth placeholder="Search..."
-                    sx={{ maxWidth: '400px', '& .MuiOutlinedInput-root': { borderRadius: '20px', bgcolor: '#f1f3f4' } }}
+                    sx={{
+                      maxWidth: '400px',
+                      minWidth: 0,
+                      '& .MuiOutlinedInput-root': { borderRadius: '20px', bgcolor: '#f1f3f4' },
+                    }}
                     InputProps={{
                       startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment>,
                     }}
                   />
                 </Box>
 
-                {/* MOBILE HAMBURGER - REF BASED TAP */}
-                <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
+                {/* MOBILE HAMBURGER */}
+                <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', flexShrink: 0 }}>
                   <IconButton
-                    ref={menuButtonRef} // Attach the ref here
-                    onClick={openDrawer} // Desktop fallback
+                    onClick={openDrawer}
                     color="primary"
+                    aria-label="Open menu"
+                    aria-haspopup="dialog"
+                    aria-expanded={drawerOpen ? 'true' : undefined}
                     sx={{
-                      p: 1.2,
+                      width: 44,
+                      height: 44,
                       bgcolor: '#f1f3f4',
                       cursor: 'pointer',
-                      touchAction: 'none', // Critical for bypassing browser gesture logic
+                      touchAction: 'manipulation',
                       WebkitTapHighlightColor: 'transparent',
                     }}
                   >
-                    <MenuIcon sx={{ pointerEvents: 'none' }} />
+                    <MenuIcon />
                   </IconButton>
                 </Box>
               </Toolbar>
@@ -124,7 +115,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             open={drawerOpen}
             onClose={closeDrawer}
             disableEnforceFocus 
-            disablePortal // Older iOS handles touches better if the drawer isn't moved to the body root
             ModalProps={{ keepMounted: true }}
             PaperProps={{
               sx: { width: 280, pt: 1, zIndex: (theme: Theme) => theme.zIndex.drawer + 100 },
