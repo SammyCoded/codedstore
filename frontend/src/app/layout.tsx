@@ -9,7 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link';
 import { 
   Box, AppBar, Toolbar, Typography, Container, 
-  Button, TextField, InputAdornment, IconButton, Menu, MenuItem 
+  Button, TextField, InputAdornment, IconButton, Popover, MenuItem 
 } from '@mui/material';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -97,12 +97,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <MenuIcon />
                   </IconButton>
                   
-                  <Menu
+                  <Popover
                     anchorEl={anchorEl}
                     open={open}
                     onClose={handleCloseMenu}
-                    container={document.body}   // ✅ force render inside body (iOS fix)
-                    disableScrollLock
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                     PaperProps={{ sx: { width: '180px', mt: 1, borderRadius: 2, boxShadow: 3 } }}
@@ -121,7 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <hr style={{ border: '0.5px solid #eee', margin: '4px 0' }} />
                     <MenuItem onClick={handleCloseMenu} component={Link} href="/account" sx={{ py: 1.5 }}>Account</MenuItem>
                     <MenuItem onClick={handleCloseMenu} component={Link} href="/cart" sx={{ py: 1.5 }}>Cart</MenuItem>
-                  </Menu>
+                  </Popover>
                 </Box>
 
               </Toolbar>
