@@ -29,13 +29,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
 
+  // Stable references for state changes
   const openDrawer  = useCallback(() => setDrawerOpen(true),  []);
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   const handleNavigate = useCallback((href: string) => {
     setDrawerOpen(false);
-    // Tiny delay to ensure the drawer starts closing before navigation triggers
-    setTimeout(() => router.push(href), 50);
+    // Removed setTimeout: Older iPhones sometimes lose the navigation intent 
+    // if it's wrapped in a timer during a state update.
+    router.push(href);
   }, [router]);
 
   return (
@@ -44,22 +46,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeRegistry>
           {/* ── APP BAR ──────────────────────────────────────────────── */}
           <AppBar
-            position="sticky"
             elevation={0}
             sx={{
+              // position: '-webkit-sticky' is vital for iPhone 7/8 series
+              position: ['-webkit-sticky', 'sticky'],
+              top: 0,
               borderBottom: '1px solid',
               borderColor: 'divider',
               bgcolor: 'background.paper',
               zIndex: (theme) => theme.zIndex.appBar,
-              // iOS Fix: Force hardware acceleration & ensure it stays on top
-              WebkitTransform: 'translateZ(0)',
-              touchAction: 'pan-y', 
+              WebkitTransform: 'translateZ(0)', // Fixes flickering/layering on old WebKit
             }}
           >
             <Container maxWidth="lg">
               <Toolbar disableGutters sx={{ gap: 1 }}>
 
-                {/* LOGO - Fixed to show on mobile (xs: 'flex') */}
+                {/* LOGO */}
                 <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                   <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                     <ShoppingCartIcon color="primary" sx={{ fontSize: 28, mr: 1 }} />
@@ -68,7 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       color="primary"
                       sx={{ 
                         fontWeight: 'bold', 
-                        display: { xs: 'block', sm: 'block' },
+                        display: 'block', // Ensure visible on all mobile
                         fontSize: { xs: '0.9rem', sm: '1.25rem' } 
                       }}
                     >
@@ -112,13 +114,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </Button>
                 </Box>
 
-                {/* MOBILE HAMBURGER - Refined for iPhone */}
+                {/* MOBILE HAMBURGER - Ultra-Compatible with iPhone 7 Plus */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', flexShrink: 0 }}>
                   <IconButton
-                    // iOS Fix: Trigger immediately on touch
-                    onTouchStart={(e) => {
-                        e.stopPropagation();
-                        openDrawer();
+                    // Event sequence for maximum compatibility
+                    onPointerDown={(e) => {
+                      e.stopPropagation();
+                      openDrawer();
                     }}
                     onClick={openDrawer}
                     color="primary"
@@ -130,8 +132,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       cursor: 'pointer', 
                       minWidth: 44,
                       minHeight: 44,
-                      position: 'relative',
-                      zIndex: 10,
+                      // Prevent parent elements from intercepting the touch
+                      touchAction: 'manipulation',
                       '&:active': { bgcolor: '#e0e0e0' },
                     }}
                   >
@@ -148,12 +150,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             anchor="right"
             open={drawerOpen}
             onClose={closeDrawer}
+            // keepMounted helps older browsers keep the DOM ready
             ModalProps={{ keepMounted: true }}
             PaperProps={{
               sx: {
                 width: 280,
                 pt: 1,
-                zIndex: (theme: Theme) => theme.zIndex.drawer + 10,
+                // Ensure it sits above the sticky header layer
+                zIndex: (theme: Theme) => theme.zIndex.drawer + 100,
                 boxShadow: '-4px 0 20px rgba(0,0,0,0.12)',
               },
             }}
