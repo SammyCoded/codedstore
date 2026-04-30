@@ -92,12 +92,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <List sx={{ width: 220 }}>
               {navItems.map((item) => (
                 <ListItem key={item.label} disablePadding>
-                  <ListItemButton
-                    component={Link}
-                    href={item.href}
-                    onClick={() => setDrawerOpen(false)}
-                  >
-                    <ListItemText primary={item.label} />
+                  <ListItemButton onClick={() => setDrawerOpen(false)}>
+                    {/* Wrap the text with Next.js Link */}
+                    <Link href={item.href} style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
+                      <ListItemText primary={item.label} />
+                    </Link>
                   </ListItemButton>
                 </ListItem>
               ))}
