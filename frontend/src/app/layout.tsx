@@ -11,8 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  Box, AppBar, Toolbar, Typography, Container,
-  Button, TextField, InputAdornment, IconButton,
+  Box, AppBar, Toolbar, Typography, Container, TextField, InputAdornment, IconButton,
   Drawer, List, ListItem, ListItemButton, ListItemText, Divider,
 } from '@mui/material';
 
@@ -55,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             <Container maxWidth="lg">
               <Toolbar disableGutters sx={{ gap: 1 }}>
+                
                 {/* LOGO */}
                 <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                   <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
@@ -76,30 +76,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   />
                 </Box>
 
-                {/* DESKTOP NAV */}
-                <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0.5 }}>
-                  {navItems.slice(0, 4).map((item) => (
-                    <Button key={item.label} component={Link} href={item.href} color="inherit" sx={{ textTransform: 'none' }}>
-                      {item.label}
-                    </Button>
-                  ))}
-                </Box>
-
-                {/* MOBILE HAMBURGER - FIX FOR IPHONE 7 PLUS */}
+                {/* MOBILE HAMBURGER - TAP OPTIMIZED */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                   <IconButton
-                    // onTouchStart fires instantly on old iOS, bypassing the 300ms click delay
+                    // 1. THIS IS THE TAP FIX: Use onTouchStart for instant reaction
                     onTouchStart={(e) => {
+                      e.preventDefault(); // Stop the "click" from firing 300ms later
                       e.stopPropagation();
                       openDrawer();
                     }}
-                    onClick={openDrawer}
+                    // 2. Fallback for desktop mouse users
+                    onClick={openDrawer} 
                     color="primary"
                     sx={{
                       p: 1.2,
                       bgcolor: '#f1f3f4',
                       cursor: 'pointer',
-                      touchAction: 'manipulation', // Prevents zoom gestures from blocking the tap
+                      // 3. Tells the browser not to wait for gestures (zoom/scroll)
+                      touchAction: 'none', 
                       WebkitTapHighlightColor: 'transparent',
                     }}
                   >
@@ -110,35 +104,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Container>
           </AppBar>
 
-          {/* MOBILE DRAWER - FIX FOR ARIA-HIDDEN ERROR */}
+          {/* DRAWER */}
           <Drawer
             anchor="right"
             open={drawerOpen}
             onClose={closeDrawer}
-            // 1. Prevents the Drawer from fighting the browser for focus control
             disableEnforceFocus 
-            // 2. Ensuring the portal doesn't confuse the DOM hierarchy on older WebKit
-            disablePortal={false} 
-            ModalProps={{
-              keepMounted: true,
-            }}
+            ModalProps={{ keepMounted: true }}
             PaperProps={{
-              sx: {
-                width: 280,
-                pt: 1,
-                zIndex: (theme: Theme) => theme.zIndex.drawer + 100,
-              },
+              sx: { width: 280, pt: 1, zIndex: (theme: Theme) => theme.zIndex.drawer + 100 },
             }}
           >
              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
                <Typography variant="subtitle1" fontWeight={700} color="primary">Menu</Typography>
-               <IconButton onClick={closeDrawer} size="small"><CloseIcon fontSize="small" /></IconButton>
+               <IconButton 
+                 onTouchStart={(e) => { e.preventDefault(); closeDrawer(); }} 
+                 onClick={closeDrawer} 
+                 size="small"
+               >
+                 <CloseIcon fontSize="small" />
+               </IconButton>
              </Box>
              <Divider />
              <List>
-               {navItems.map((item, index) => (
+               {navItems.map((item) => (
                  <ListItem key={item.label} disablePadding>
-                   <ListItemButton onClick={() => handleNavigate(item.href)} sx={{ py: 2 }}>
+                   <ListItemButton 
+                     onTouchStart={(e) => { e.preventDefault(); handleNavigate(item.href); }}
+                     onClick={() => handleNavigate(item.href)} 
+                     sx={{ py: 2 }}
+                   >
                      <ListItemText primary={item.label} />
                    </ListItemButton>
                  </ListItem>
@@ -146,19 +141,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
              </List>
           </Drawer>
 
-          {/* MAIN CONTENT - Explicitly managing the 'hidden' state */}
-          <Box 
-            component="main" 
-            aria-hidden={drawerOpen ? "true" : "false"}
-            sx={{ minHeight: '80vh', py: { xs: 2, md: 4 } }}
-          >
+          <Box component="main" sx={{ minHeight: '80vh', py: { xs: 2, md: 4 } }}>
             {children}
-          </Box>
-
-          <Box component="footer" sx={{ py: 3, borderTop: '1px solid', borderColor: 'divider', textAlign: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
-              &copy; {new Date().getFullYear()} Coded Store
-            </Typography>
           </Box>
         </ThemeRegistry>
       </body>
