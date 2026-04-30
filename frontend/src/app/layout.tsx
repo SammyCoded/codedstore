@@ -29,11 +29,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
 
+  // Stable references for state changes
   const openDrawer  = useCallback(() => setDrawerOpen(true),  []);
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   const handleNavigate = useCallback((href: string) => {
     setDrawerOpen(false);
+    // Removed setTimeout: Older iPhones sometimes lose the navigation intent 
+    // if it's wrapped in a timer during a state update.
     router.push(href);
   }, [router]);
 
@@ -45,13 +48,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AppBar
             elevation={0}
             sx={{
+              // position: '-webkit-sticky' is vital for iPhone 7/8 series
               position: ['-webkit-sticky', 'sticky'],
               top: 0,
               borderBottom: '1px solid',
               borderColor: 'divider',
               bgcolor: 'background.paper',
               zIndex: (theme) => theme.zIndex.appBar,
-              WebkitTransform: 'translateZ(0)',
+              WebkitTransform: 'translateZ(0)', // Fixes flickering/layering on old WebKit
             }}
           >
             <Container maxWidth="lg">
@@ -66,7 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       color="primary"
                       sx={{ 
                         fontWeight: 'bold', 
-                        display: 'block',
+                        display: 'block', // Ensure visible on all mobile
                         fontSize: { xs: '0.9rem', sm: '1.25rem' } 
                       }}
                     >
@@ -110,9 +114,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </Button>
                 </Box>
 
-                {/* MOBILE HAMBURGER */}
+                {/* MOBILE HAMBURGER - Ultra-Compatible with iPhone 7 Plus */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', flexShrink: 0 }}>
                   <IconButton
+                    // Event sequence for maximum compatibility
                     onPointerDown={(e) => {
                       e.stopPropagation();
                       openDrawer();
@@ -127,6 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       cursor: 'pointer', 
                       minWidth: 44,
                       minHeight: 44,
+                      // Prevent parent elements from intercepting the touch
                       touchAction: 'manipulation',
                       '&:active': { bgcolor: '#e0e0e0' },
                     }}
@@ -144,18 +150,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             anchor="right"
             open={drawerOpen}
             onClose={closeDrawer}
-            // FIX: Prevent aria-hidden focus conflicts
-            disableEnforceFocus
-            disableScrollLock={false}
-            ModalProps={{ 
-              keepMounted: true,
-              // Fix for older WebKit Modal layering
-              disablePortal: false 
-            }}
+            // keepMounted helps older browsers keep the DOM ready
+            ModalProps={{ keepMounted: true }}
             PaperProps={{
               sx: {
                 width: 280,
                 pt: 1,
+                // Ensure it sits above the sticky header layer
                 zIndex: (theme: Theme) => theme.zIndex.drawer + 100,
                 boxShadow: '-4px 0 20px rgba(0,0,0,0.12)',
               },
@@ -186,12 +187,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </Drawer>
 
           {/* ── MAIN CONTENT ────────────────────────────────────────── */}
-          <Box 
-            component="main" 
-            // FIX: Explicitly handle background state for accessibility
-            aria-hidden={drawerOpen}
-            sx={{ minHeight: '80vh', py: { xs: 2, md: 4 } }}
-          >
+          <Box component="main" sx={{ minHeight: '80vh', py: { xs: 2, md: 4 } }}>
             {children}
           </Box>
 
