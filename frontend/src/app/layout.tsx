@@ -89,7 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             open={drawerOpen}
             onClose={() => setDrawerOpen(false)}
           >
-            <List sx={{ width: 200 }}>
+            <List sx={{ width: 220 }}>
               {navItems.map((item) => (
                 <ListItem key={item.label} disablePadding>
                   <ListItemButton
