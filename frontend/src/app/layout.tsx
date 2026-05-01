@@ -10,7 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import {
   Box, AppBar, Toolbar, Typography, Container, TextField, InputAdornment, Button,
-  IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Divider,
+  IconButton, SwipeableDrawer, List, ListItem, ListItemButton, ListItemText, Divider,
 } from '@mui/material';
 
 const navItems = [
@@ -138,10 +138,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Container>
           </AppBar>
 
-          <Drawer
+          <SwipeableDrawer
             anchor="right"
             open={drawerOpen}
+            onOpen={openDrawer}
             onClose={closeDrawer}
+            disableBackdropTransition
+            disableDiscovery
             ModalProps={{ keepMounted: true }}
             PaperProps={{
               sx: {
@@ -169,7 +172,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </ListItem>
               ))}
             </List>
-          </Drawer>
+          </SwipeableDrawer>
 
           <Box component="main" sx={{ minHeight: '80vh', py: { xs: 2, md: 4 } }}>
             {children}
