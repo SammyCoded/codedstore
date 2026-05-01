@@ -1,13 +1,16 @@
 "use client";
 
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import ThemeRegistry from '../components/ThemeRegistry';
 import './globals.css';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import {
   Box, AppBar, Toolbar, Typography, Container, TextField, InputAdornment, Button,
+  IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Divider,
 } from '@mui/material';
 
 const navItems = [
@@ -20,6 +23,11 @@ const navItems = [
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const openDrawer = useCallback(() => setDrawerOpen(true), []);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+
   return (
     <html lang="en">
       <body style={{ margin: 0 }}>
@@ -37,7 +45,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }}
           >
             <Container maxWidth="lg">
-              <Toolbar disableGutters sx={{ gap: 2, minWidth: 0 }}>
+              <Toolbar
+                disableGutters
+                sx={{
+                  gap: { xs: 1, md: 2 },
+                  minWidth: 0,
+                  flexWrap: { xs: 'wrap', md: 'nowrap' },
+                  py: { xs: 1, md: 0 },
+                }}
+              >
                 
                 {/* LOGO */}
                 <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, minWidth: 0 }}>
@@ -47,15 +63,45 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       variant="h6"
                       color="primary"
                       noWrap
-                      sx={{ fontWeight: 'bold', fontSize: '1.25rem' }}
+                      sx={{ fontWeight: 'bold', fontSize: { xs: '0.95rem', sm: '1.1rem', md: '1.25rem' } }}
                     >
                       CODED STORE
                     </Typography>
                   </Link>
                 </Box>
 
+                {/* MOBILE MENU BUTTON */}
+                <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', ml: 'auto', flexShrink: 0 }}>
+                  <IconButton
+                    onClick={openDrawer}
+                    color="primary"
+                    aria-label="Open menu"
+                    aria-haspopup="dialog"
+                    aria-expanded={drawerOpen ? 'true' : undefined}
+                    sx={{
+                      width: 44,
+                      height: 44,
+                      bgcolor: '#f1f3f4',
+                      touchAction: 'manipulation',
+                      WebkitTapHighlightColor: 'transparent',
+                    }}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                </Box>
+
                 {/* SEARCH */}
-                <Box sx={{ flexGrow: 1, minWidth: 240, display: 'flex', justifyContent: 'center', px: 2 }}>
+                <Box
+                  sx={{
+                    order: { xs: 3, md: 0 },
+                    width: { xs: '100%', md: 'auto' },
+                    flexGrow: 1,
+                    minWidth: { xs: 0, md: 240 },
+                    display: 'flex',
+                    justifyContent: 'center',
+                    px: { xs: 0, md: 2 },
+                  }}
+                >
                   <TextField
                     variant="outlined" size="small" fullWidth placeholder="Search..."
                     sx={{
@@ -70,7 +116,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Box>
 
                 {/* DESKTOP NAV */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
+                <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
                   {navItems.map((item) => (
                     <Button
                       key={item.label}
@@ -92,7 +138,40 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Container>
           </AppBar>
 
-          <Box component="main" sx={{ minHeight: '80vh', py: 4 }}>
+          <Drawer
+            anchor="right"
+            open={drawerOpen}
+            onClose={closeDrawer}
+            ModalProps={{ keepMounted: true }}
+            PaperProps={{
+              sx: {
+                width: { xs: '82vw', sm: 320 },
+                maxWidth: 360,
+                pt: 1,
+              },
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
+              <Typography variant="subtitle1" fontWeight={700} color="primary">
+                Menu
+              </Typography>
+              <IconButton onClick={closeDrawer} size="small" aria-label="Close menu">
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </Box>
+            <Divider />
+            <List>
+              {navItems.map((item) => (
+                <ListItem key={item.label} disablePadding>
+                  <ListItemButton component={Link} href={item.href} onClick={closeDrawer} sx={{ py: 2 }}>
+                    <ListItemText primary={item.label} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Drawer>
+
+          <Box component="main" sx={{ minHeight: '80vh', py: { xs: 2, md: 4 } }}>
             {children}
           </Box>
         </ThemeRegistry>
