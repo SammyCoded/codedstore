@@ -10,31 +10,47 @@ import Link from 'next/link';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
+type AccountUser = {
+  name: string;
+  email: string;
+};
+
+const getStoredUser = (): AccountUser | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const storedUser = localStorage.getItem('user');
+  if (!storedUser) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(storedUser) as AccountUser;
+  } catch {
+    localStorage.removeItem('user');
+    return null;
+  }
+};
+
+const hasStoredToken = () => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  return Boolean(localStorage.getItem('token'));
+};
+
 export default function AccountPage() {
   const router = useRouter();
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [user] = useState<AccountUser | null>(() => getStoredUser());
+  const [isAuthenticated] = useState(() => hasStoredToken());
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!isAuthenticated) {
       router.push('/login');
-      return;
     }
-
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch {
-        localStorage.removeItem('user');
-      }
-    }
-
-    setCheckingAuth(false);
-  }, [router]);
+  }, [isAuthenticated, router]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -42,7 +58,7 @@ export default function AccountPage() {
     router.push('/login');
   };
 
-  if (checkingAuth) {
+  if (!isAuthenticated) {
     return (
       <Container maxWidth="md" sx={{ mt: 8, mb: 8 }}>
         <Typography>Checking authentication...</Typography>

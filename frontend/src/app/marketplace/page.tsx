@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Box, Container, Typography, TextField, Button, 
   Paper, Grid as Grid, InputAdornment, Stack, 
@@ -40,20 +40,7 @@ export default function MarketplacePage() {
     image: null as File | null,
   });
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      if (token) {
-        setIsLoggedIn(true);
-        fetchProducts(); // Only fetch products if logged in
-      } else {
-        setIsLoggedIn(false);
-      }
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setProductsLoading(true);
     try {
       const token = localStorage.getItem('token');
@@ -80,7 +67,22 @@ export default function MarketplacePage() {
     } finally {
       setProductsLoading(false);
     }
-  };
+  }, [apiBase]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+      fetchProducts(); // Only fetch products if logged in
+    } else {
+      setIsLoggedIn(false);
+    }
+    setLoading(false);
+  }, [fetchProducts]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
