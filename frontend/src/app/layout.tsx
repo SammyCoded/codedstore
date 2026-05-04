@@ -51,12 +51,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   gap: { xs: 1, md: 2 },
                   minWidth: 0,
                   flexWrap: { xs: 'wrap', md: 'nowrap' },
+                  alignItems: { xs: 'flex-start', md: 'center' },
                   py: { xs: 1, md: 0 },
                 }}
               >
                 
                 {/* LOGO */}
-                <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, minWidth: 0 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexShrink: 0,
+                    minWidth: 0,
+                    width: { xs: 'calc(100% - 52px)', md: 'auto' },
+                    minHeight: { xs: 44, md: 'auto' },
+                  }}
+                >
                   <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                     <ShoppingCartIcon color="primary" sx={{ fontSize: 28, mr: 1 }} />
                     <Typography
@@ -71,7 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Box>
 
                 {/* MOBILE MENU BUTTON */}
-                <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', ml: 'auto', flexShrink: 0 }}>
+                <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', justifyContent: 'flex-end', width: 44, ml: 'auto', flexShrink: 0 }}>
                   <IconButton
                     onClick={openDrawer}
                     color="primary"
@@ -82,6 +92,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       width: 44,
                       height: 44,
                       bgcolor: '#f1f3f4',
+                      flexShrink: 0,
+                      position: 'relative',
+                      zIndex: 2,
                       touchAction: 'manipulation',
                       WebkitTapHighlightColor: 'transparent',
                     }}
@@ -95,6 +108,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   sx={{
                     order: { xs: 3, md: 0 },
                     width: { xs: '100%', md: 'auto' },
+                    flexBasis: { xs: '100%', md: 'auto' },
                     flexGrow: 1,
                     minWidth: { xs: 0, md: 240 },
                     display: 'flex',
@@ -116,7 +130,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Box>
 
                 {/* DESKTOP NAV */}
-                <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
+                <Box
+                  sx={{
+                    display: { xs: 'none', md: 'flex' },
+                    alignItems: 'center',
+                    gap: 0.5,
+                    flexShrink: 0,
+                    width: { xs: 0, md: 'auto' },
+                    overflow: 'hidden',
+                    pointerEvents: { xs: 'none', md: 'auto' },
+                  }}
+                >
                   {navItems.map((item) => (
                     <Button
                       key={item.label}
@@ -142,15 +166,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             anchor="right"
             open={drawerOpen}
             onOpen={openDrawer}
+            
             onClose={closeDrawer}
             disableBackdropTransition
             disableDiscovery
-            ModalProps={{ keepMounted: true }}
+            sx={{ zIndex: 20000 }}
+            ModalProps={{
+              keepMounted: true,
+              sx: { zIndex: 20000 },
+            }}
             PaperProps={{
               sx: {
-                width: { xs: '82vw', sm: 320 },
+                width: { xs: 'min(86vw, 320px)', sm: 320 },
                 maxWidth: 360,
                 pt: 1,
+                zIndex: 20001,
               },
             }}
           >
@@ -165,9 +195,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Divider />
             <List>
               {navItems.map((item) => (
-                <ListItem key={item.label} disablePadding>
-                  <ListItemButton component={Link} href={item.href} onClick={closeDrawer} sx={{ py: 2 }}>
-                    <ListItemText primary={item.label} />
+                <ListItem key={item.label} disablePadding sx={{ width: '100%' }}>
+                  <ListItemButton
+                    component={Link}
+                    href={item.href}
+                    onClick={closeDrawer}
+                    sx={{
+                      width: '100%',
+                      minHeight: 52,
+                      px: 2.5,
+                      py: 1.5,
+                    }}
+                  >
+                    <ListItemText
+                      primary={item.label}
+                      primaryTypographyProps={{
+                        noWrap: true,
+                        fontWeight: 600,
+                      }}
+                    />
                   </ListItemButton>
                 </ListItem>
               ))}
