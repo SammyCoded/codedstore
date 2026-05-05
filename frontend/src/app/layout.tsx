@@ -10,7 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import {
   Box, AppBar, Toolbar, Typography, Container, TextField, InputAdornment, Button,
-  IconButton, SwipeableDrawer, List, ListItem, ListItemButton, ListItemText, Divider,
+  IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Divider,
 } from '@mui/material';
 
 const navItems = [
@@ -83,6 +83,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* MOBILE MENU BUTTON */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', justifyContent: 'flex-end', ml: 'auto', flexShrink: 0 }}>
                   <IconButton
+                    component="button"
+                    type="button"
                     onClick={openDrawer}
                     color="primary"
                     aria-label="Open menu"
@@ -96,6 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       p: 1,
                       bgcolor: '#f1f3f4',
                       flexShrink: 0,
+                      pointerEvents: 'auto',
                       '&:hover': {
                         bgcolor: '#e8eaed',
                       },
@@ -164,14 +167,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Container>
           </AppBar>
 
-          <SwipeableDrawer
+          <Drawer
             anchor="right"
             open={drawerOpen}
-            onOpen={openDrawer}
-            
             onClose={closeDrawer}
-            disableBackdropTransition
-            disableDiscovery
             sx={{ zIndex: 20000 }}
             ModalProps={{
               keepMounted: true,
@@ -220,7 +219,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </ListItem>
               ))}
             </List>
-          </SwipeableDrawer>
+          </Drawer>
 
           <Box component="main" sx={{ minHeight: '80vh', py: { xs: 2, md: 4 } }}>
             {children}
