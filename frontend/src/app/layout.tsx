@@ -96,11 +96,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       minWidth: 44,
                       minHeight: 44,
                       p: 1,
-                      bgcolor: '#f1f3f4',
+                      bgcolor: 'transparent',
+                      boxShadow: 'none',
+                      border: 0,
                       flexShrink: 0,
                       pointerEvents: 'auto',
                       '&:hover': {
-                        bgcolor: '#e8eaed',
+                        bgcolor: 'transparent',
+                        boxShadow: 'none',
+                      },
+                      '&:focus': {
+                        boxShadow: 'none',
+                      },
+                      '&:active': {
+                        boxShadow: 'none',
                       },
                     }}
                   >
