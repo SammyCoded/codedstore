@@ -81,25 +81,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Box>
 
                 {/* MOBILE MENU BUTTON */}
-                <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', justifyContent: 'flex-end', width: 44, ml: 'auto', flexShrink: 0 }}>
+                <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', justifyContent: 'flex-end', ml: 'auto', flexShrink: 0 }}>
                   <IconButton
                     onClick={openDrawer}
                     color="primary"
                     aria-label="Open menu"
                     aria-haspopup="dialog"
                     aria-expanded={drawerOpen ? 'true' : undefined}
+                    edge="end"
+                    disableRipple
                     sx={{
-                      width: 44,
-                      height: 44,
+                      minWidth: 44,
+                      minHeight: 44,
+                      p: 1,
                       bgcolor: '#f1f3f4',
                       flexShrink: 0,
-                      position: 'relative',
-                      zIndex: 2,
-                      touchAction: 'manipulation',
-                      WebkitTapHighlightColor: 'transparent',
+                      '&:hover': {
+                        bgcolor: '#e8eaed',
+                      },
                     }}
                   >
-                    <MenuIcon />
+                    <MenuIcon fontSize="medium" />
                   </IconButton>
                 </Box>
 
