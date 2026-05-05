@@ -27,6 +27,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   const openDrawer = useCallback(() => setDrawerOpen(true), []);
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+  const handleMenuTouch = useCallback((event: React.TouchEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    openDrawer();
+  }, [openDrawer]);
 
   return (
     <html lang="en">
@@ -81,11 +85,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Box>
 
                 {/* MOBILE MENU BUTTON */}
-                <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', justifyContent: 'flex-end', ml: 'auto', flexShrink: 0 }}>
+                <Box
+                  sx={{
+                    display: { xs: 'flex', md: 'none' },
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: { xs: 'fixed', md: 'static' },
+                    top: { xs: 10, md: 'auto' },
+                    right: { xs: 16, md: 'auto' },
+                    zIndex: (theme) => theme.zIndex.appBar + 1,
+                    flexShrink: 0,
+                  }}
+                >
                   <IconButton
                     component="button"
                     type="button"
                     onClick={openDrawer}
+                    onTouchEnd={handleMenuTouch}
                     color="primary"
                     aria-label="Open menu"
                     aria-haspopup="dialog"
@@ -101,6 +117,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       border: 0,
                       flexShrink: 0,
                       pointerEvents: 'auto',
+                      touchAction: 'manipulation',
+                      WebkitTapHighlightColor: 'transparent',
                       '&:hover': {
                         bgcolor: 'transparent',
                         boxShadow: 'none',
