@@ -1,16 +1,13 @@
 "use client";
 
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import ThemeRegistry from '../components/ThemeRegistry';
 import './globals.css';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import {
   Box, AppBar, Toolbar, Typography, Container, TextField, InputAdornment, Button,
-  IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Divider,
 } from '@mui/material';
 
 const navItems = [
@@ -23,15 +20,6 @@ const navItems = [
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
-  const openDrawer = useCallback(() => setDrawerOpen(true), []);
-  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
-  const handleMenuOpen = useCallback((event: React.MouseEvent<HTMLButtonElement> | React.PointerEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    openDrawer();
-  }, [openDrawer]);
-
   return (
     <html lang="en">
       <body style={{ margin: 0 }}>
@@ -68,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     alignItems: 'center',
                     flexShrink: 0,
                     minWidth: 0,
-                    width: { xs: 'calc(100% - 52px)', md: 'auto' },
+                    width: { xs: '100%', md: 'auto' },
                     minHeight: { xs: 44, md: 'auto' },
                   }}
                 >
@@ -83,57 +71,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       CODED STORE
                     </Typography>
                   </Link>
-                </Box>
-
-                {/* MOBILE MENU BUTTON */}
-                <Box
-                  sx={{
-                    display: { xs: 'flex', md: 'none' },
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: { xs: 'absolute', md: 'static' },
-                    top: { xs: 8, md: 'auto' },
-                    right: { xs: 0, md: 'auto' },
-                    zIndex: (theme) => theme.zIndex.appBar + 1,
-                    flexShrink: 0,
-                  }}
-                >
-                  <IconButton
-                    component="button"
-                    type="button"
-                    onClick={handleMenuOpen}
-                    onPointerDown={handleMenuOpen}
-                    color="primary"
-                    aria-label="Open menu"
-                    aria-haspopup="dialog"
-                    aria-expanded={drawerOpen ? 'true' : undefined}
-                    edge="end"
-                    disableRipple
-                    sx={{
-                      minWidth: 44,
-                      minHeight: 44,
-                      p: 1,
-                      bgcolor: 'transparent',
-                      boxShadow: 'none',
-                      border: 0,
-                      flexShrink: 0,
-                      pointerEvents: 'auto',
-                      touchAction: 'manipulation',
-                      WebkitTapHighlightColor: 'transparent',
-                      '&:hover': {
-                        bgcolor: 'transparent',
-                        boxShadow: 'none',
-                      },
-                      '&:focus': {
-                        boxShadow: 'none',
-                      },
-                      '&:active': {
-                        boxShadow: 'none',
-                      },
-                    }}
-                  >
-                    <MenuIcon fontSize="medium" />
-                  </IconButton>
                 </Box>
 
                 {/* SEARCH */}
@@ -194,70 +131,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Toolbar>
             </Container>
           </AppBar>
-
-          <Drawer
-            anchor="right"
-            open={drawerOpen}
-            onClose={closeDrawer}
-            sx={{ zIndex: 20000 }}
-            ModalProps={{
-              keepMounted: true,
-              sx: { zIndex: 20000 },
-            }}
-            PaperProps={{
-              sx: {
-                width: { xs: 'min(86vw, 320px)', sm: 320 },
-                maxWidth: 360,
-                height: { xs: 'auto', md: '100%' },
-                maxHeight: { xs: 'calc(100vh - 32px)', md: '100%' },
-                borderRadius: { xs: 3, md: 0 },
-                pt: 1,
-                zIndex: 20001,
-                '@media (max-width:899.95px)': {
-                  top: '50%',
-                  left: '50%',
-                  right: 'auto',
-                  bottom: 'auto',
-                  transform: 'translate(-50%, -50%) !important',
-                },
-              },
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
-              <Typography variant="subtitle1" fontWeight={700} color="primary">
-                Menu
-              </Typography>
-              <IconButton onClick={closeDrawer} size="small" aria-label="Close menu">
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Box>
-            <Divider />
-            <List>
-              {navItems.map((item) => (
-                <ListItem key={item.label} disablePadding sx={{ width: '100%' }}>
-                  <ListItemButton
-                    component={Link}
-                    href={item.href}
-                    onClick={closeDrawer}
-                    sx={{
-                      width: '100%',
-                      minHeight: 52,
-                      px: 2.5,
-                      py: 1.5,
-                    }}
-                  >
-                    <ListItemText
-                      primary={item.label}
-                      primaryTypographyProps={{
-                        noWrap: true,
-                        fontWeight: 600,
-                      }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Drawer>
 
           <Box component="main" sx={{ minHeight: '80vh', py: { xs: 2, md: 4 } }}>
             {children}
