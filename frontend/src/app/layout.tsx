@@ -5,6 +5,8 @@ import ThemeRegistry from '../components/ThemeRegistry';
 import './globals.css';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import {
   Box, AppBar, Toolbar, Typography, Container, TextField, InputAdornment, Button,
@@ -129,7 +131,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
-                    width: { xs: 54, sm: 64 },
+                    width: { xs: 40, sm: 44 },
                     height: { xs: 36, sm: 40 },
                     p: 0,
                     border: '1px solid',
@@ -137,16 +139,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     borderRadius: 1.5,
                     bgcolor: 'background.paper',
                     color: 'primary.main',
-                    font: 'inherit',
-                    fontSize: { xs: '0.75rem', sm: '0.82rem' },
-                    fontWeight: 700,
-                    lineHeight: 1,
                     cursor: 'pointer',
                     touchAction: 'manipulation',
                     WebkitTapHighlightColor: 'transparent',
                   }}
                 >
-                  {mobileNavOpen ? 'Close' : 'Menu'}
+                  {mobileNavOpen ? <CloseIcon fontSize="small" /> : <MenuIcon fontSize="small" />}
                 </Box>
 
                 {/* DESKTOP NAV */}
