@@ -24,8 +24,9 @@ const navItems = [
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-  const toggleMobileNav = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+  const toggleMobileNav = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    window.alert('menu tapped');
     setMobileNavOpen((open) => !open);
   };
 
@@ -123,7 +124,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   component="button"
                   type="button"
                   onClick={toggleMobileNav}
-                  onTouchEnd={toggleMobileNav}
                   aria-label={mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
                   aria-expanded={mobileNavOpen}
                   sx={{
@@ -131,6 +131,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
+                    position: 'relative',
+                    zIndex: 99999,
                     width: { xs: 40, sm: 44 },
                     height: { xs: 36, sm: 40 },
                     p: 0,
