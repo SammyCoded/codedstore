@@ -43,8 +43,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   gap: { xs: 1, md: 2 },
                   minWidth: 0,
                   position: 'relative',
-                  flexWrap: { xs: 'wrap', md: 'nowrap' },
-                  alignItems: { xs: 'flex-start', md: 'center' },
+                  flexWrap: 'nowrap',
+                  alignItems: 'center',
                   py: { xs: 1, md: 0 },
                 }}
               >
@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     alignItems: 'center',
                     flexShrink: 0,
                     minWidth: 0,
-                    width: { xs: '100%', md: 'auto' },
+                    width: 'auto',
                     minHeight: { xs: 44, md: 'auto' },
                   }}
                 >
@@ -76,11 +76,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* SEARCH */}
                 <Box
                   sx={{
-                    order: { xs: 3, md: 0 },
-                    width: { xs: '100%', md: 'auto' },
-                    flexBasis: { xs: '100%', md: 'auto' },
+                    width: 'auto',
+                    flexBasis: { xs: 0, md: 'auto' },
                     flexGrow: 1,
-                    minWidth: { xs: 0, md: 240 },
+                    minWidth: { xs: 120, md: 240 },
                     display: 'flex',
                     justifyContent: 'center',
                     px: { xs: 0, md: 2 },
@@ -129,6 +128,44 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   ))}
                 </Box>
               </Toolbar>
+
+              {/* MOBILE NAV */}
+              <Box
+                component="nav"
+                aria-label="Mobile navigation"
+                sx={{
+                  display: { xs: 'flex', md: 'none' },
+                  alignItems: 'center',
+                  gap: 0.5,
+                  overflowX: 'auto',
+                  overflowY: 'hidden',
+                  pb: 1,
+                  WebkitOverflowScrolling: 'touch',
+                  scrollbarWidth: 'none',
+                  '&::-webkit-scrollbar': {
+                    display: 'none',
+                  },
+                }}
+              >
+                {navItems.map((item) => (
+                  <Button
+                    key={item.label}
+                    component={Link}
+                    href={item.href}
+                    color="primary"
+                    size="small"
+                    sx={{
+                      px: 1.25,
+                      minWidth: 'max-content',
+                      fontWeight: 700,
+                      whiteSpace: 'nowrap',
+                      textTransform: 'none',
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </Box>
             </Container>
           </AppBar>
 
