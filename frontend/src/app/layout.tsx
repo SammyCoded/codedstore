@@ -1,13 +1,16 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import ThemeRegistry from '../components/ThemeRegistry';
 import './globals.css';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import {
   Box, AppBar, Toolbar, Typography, Container, TextField, InputAdornment, Button,
+  Collapse, IconButton,
 } from '@mui/material';
 
 const navItems = [
@@ -20,6 +23,8 @@ const navItems = [
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
   return (
     <html lang="en">
       <body style={{ margin: 0 }}>
@@ -98,6 +103,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   />
                 </Box>
 
+                {/* MOBILE NAV TOGGLE */}
+                <IconButton
+                  color="primary"
+                  onClick={() => setMobileNavOpen((open) => !open)}
+                  aria-label={mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                  aria-expanded={mobileNavOpen}
+                  sx={{
+                    display: { xs: 'inline-flex', md: 'none' },
+                    flexShrink: 0,
+                    width: 44,
+                    height: 44,
+                  }}
+                >
+                  {mobileNavOpen ? <CloseIcon /> : <MenuIcon />}
+                </IconButton>
+
                 {/* DESKTOP NAV */}
                 <Box
                   sx={{
@@ -130,42 +151,38 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Toolbar>
 
               {/* MOBILE NAV */}
-              <Box
-                component="nav"
-                aria-label="Mobile navigation"
-                sx={{
-                  display: { xs: 'flex', md: 'none' },
-                  alignItems: 'center',
-                  gap: 0.5,
-                  overflowX: 'auto',
-                  overflowY: 'hidden',
-                  pb: 1,
-                  WebkitOverflowScrolling: 'touch',
-                  scrollbarWidth: 'none',
-                  '&::-webkit-scrollbar': {
-                    display: 'none',
-                  },
-                }}
-              >
-                {navItems.map((item) => (
-                  <Button
-                    key={item.label}
-                    component={Link}
-                    href={item.href}
-                    color="primary"
-                    size="small"
-                    sx={{
-                      px: 1.25,
-                      minWidth: 'max-content',
-                      fontWeight: 700,
-                      whiteSpace: 'nowrap',
-                      textTransform: 'none',
-                    }}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-              </Box>
+              <Collapse in={mobileNavOpen} timeout="auto" unmountOnExit>
+                <Box
+                  component="nav"
+                  aria-label="Mobile navigation"
+                  sx={{
+                    display: { xs: 'grid', md: 'none' },
+                    gridTemplateColumns: '1fr',
+                    gap: 0.5,
+                    pb: 1,
+                  }}
+                >
+                  {navItems.map((item) => (
+                    <Button
+                      key={item.label}
+                      component={Link}
+                      href={item.href}
+                      color="primary"
+                      fullWidth
+                      onClick={() => setMobileNavOpen(false)}
+                      sx={{
+                        justifyContent: 'flex-start',
+                        px: 1.5,
+                        py: 1,
+                        fontWeight: 700,
+                        textTransform: 'none',
+                      }}
+                    >
+                      {item.label}
+                    </Button>
+                  ))}
+                </Box>
+              </Collapse>
             </Container>
           </AppBar>
 

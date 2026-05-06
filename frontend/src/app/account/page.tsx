@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Box, Container, Typography, Paper, 
@@ -46,12 +46,6 @@ export default function AccountPage() {
   const [user] = useState<AccountUser | null>(() => getStoredUser());
   const [isAuthenticated] = useState(() => hasStoredToken());
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthenticated, router]);
-
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -61,7 +55,22 @@ export default function AccountPage() {
   if (!isAuthenticated) {
     return (
       <Container maxWidth="md" sx={{ mt: 8, mb: 8 }}>
-        <Typography>Checking authentication...</Typography>
+        <Paper elevation={0} sx={{ p: 4, textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 4 }}>
+          <Typography variant="h4" fontWeight="bold" gutterBottom>
+            Sign in to view your account
+          </Typography>
+          <Typography color="text.secondary" sx={{ mb: 3 }}>
+            Access your saved details, orders, and marketplace activity after logging in.
+          </Typography>
+          <Stack spacing={2}>
+            <Button component={Link} href="/login" variant="contained" size="large" sx={{ borderRadius: 8 }}>
+              Log In
+            </Button>
+            <Button component={Link} href="/signup" variant="outlined" size="large" sx={{ borderRadius: 8 }}>
+              Create Account
+            </Button>
+          </Stack>
+        </Paper>
       </Container>
     );
   }

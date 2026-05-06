@@ -42,6 +42,9 @@ export default function MarketplacePage() {
 
   const fetchProducts = useCallback(async () => {
     setProductsLoading(true);
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 10000);
+
     try {
       const token = localStorage.getItem('token');
       const headers: Record<string, string> = {};
@@ -51,6 +54,7 @@ export default function MarketplacePage() {
 
       const response = await fetch(`${apiBase}/api/products`, {
         headers,
+        signal: controller.signal,
       });
 
       if (response.ok) {
@@ -63,8 +67,13 @@ export default function MarketplacePage() {
         setIsLoggedIn(false);
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        console.error('Marketplace products request timed out');
+      } else {
+        console.error('Error fetching products:', error);
+      }
     } finally {
+      window.clearTimeout(timeoutId);
       setProductsLoading(false);
     }
   }, [apiBase]);
@@ -77,10 +86,10 @@ export default function MarketplacePage() {
     const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
-      fetchProducts(); // Only fetch products if logged in
     } else {
       setIsLoggedIn(false);
     }
+    fetchProducts();
     setLoading(false);
   }, [fetchProducts]);
 
