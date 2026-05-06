@@ -6,10 +6,10 @@ import './globals.css';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import {
   Box, AppBar, Toolbar, Typography, Container, TextField, InputAdornment, Button,
+  IconButton, Menu, MenuItem,
 } from '@mui/material';
 
 const navItems = [
@@ -22,12 +22,15 @@ const navItems = [
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [mobileMenuAnchor, setMobileMenuAnchor] = useState<HTMLElement | null>(null);
+  const mobileNavOpen = Boolean(mobileMenuAnchor);
 
-  const toggleMobileNav = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    window.alert('menu tapped');
-    setMobileNavOpen((open) => !open);
+  const openMobileNav = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setMobileMenuAnchor(event.currentTarget);
+  };
+
+  const closeMobileNav = () => {
+    setMobileMenuAnchor(null);
   };
 
   return (
@@ -120,34 +123,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Box>
 
                 {/* MOBILE NAV TOGGLE */}
-                <Box
-                  component="button"
-                  type="button"
-                  onClick={toggleMobileNav}
-                  aria-label={mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                <IconButton
+                  color="primary"
+                  onClick={openMobileNav}
+                  aria-label="Open navigation menu"
                   aria-expanded={mobileNavOpen}
+                  aria-haspopup="menu"
                   sx={{
-                    display: { xs: 'flex', md: 'none' },
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    display: { xs: 'inline-flex', md: 'none' },
                     flexShrink: 0,
                     position: 'relative',
-                    zIndex: 99999,
-                    width: { xs: 40, sm: 44 },
-                    height: { xs: 36, sm: 40 },
-                    p: 0,
-                    border: '1px solid',
-                    borderColor: 'primary.main',
-                    borderRadius: 1.5,
-                    bgcolor: 'background.paper',
-                    color: 'primary.main',
-                    cursor: 'pointer',
+                    zIndex: (theme) => theme.zIndex.appBar + 1,
+                    width: 44,
+                    height: 44,
                     touchAction: 'manipulation',
                     WebkitTapHighlightColor: 'transparent',
                   }}
                 >
-                  {mobileNavOpen ? <CloseIcon fontSize="small" /> : <MenuIcon fontSize="small" />}
-                </Box>
+                  <MenuIcon />
+                </IconButton>
 
                 {/* DESKTOP NAV */}
                 <Box
@@ -181,45 +175,45 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Toolbar>
 
               {/* MOBILE NAV */}
-              <Box
-                component="nav"
-                aria-label="Mobile navigation"
-                sx={{
-                  display: { xs: mobileNavOpen ? 'grid' : 'none', md: 'none' },
-                  gridTemplateColumns: '1fr',
-                  gap: 0.5,
-                  pb: 1,
+              <Menu
+                anchorEl={mobileMenuAnchor}
+                open={mobileNavOpen}
+                onClose={closeMobileNav}
+                keepMounted
+                disableScrollLock
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      display: { xs: 'block', md: 'none' },
+                      minWidth: 190,
+                      mt: 0.5,
+                    },
+                  },
                 }}
               >
                 {navItems.map((item) => (
-                  <Link
+                  <MenuItem
                     key={item.label}
+                    component={Link}
                     href={item.href}
-                    onClick={() => setMobileNavOpen(false)}
-                    style={{ textDecoration: 'none' }}
+                    onClick={closeMobileNav}
+                    sx={{
+                      minHeight: 44,
+                      fontWeight: 700,
+                    }}
                   >
-                    <Box
-                      component="span"
-                      sx={{
-                        display: 'block',
-                        width: '100%',
-                        borderRadius: 1,
-                        px: 1.5,
-                        py: 1.25,
-                        color: 'primary.main',
-                        fontWeight: 700,
-                        fontSize: '0.95rem',
-                        WebkitTapHighlightColor: 'transparent',
-                        '&:active': {
-                          bgcolor: 'action.selected',
-                        },
-                      }}
-                    >
-                      {item.label}
-                    </Box>
-                  </Link>
+                    {item.label}
+                  </MenuItem>
                 ))}
-              </Box>
+              </Menu>
             </Container>
           </AppBar>
 
