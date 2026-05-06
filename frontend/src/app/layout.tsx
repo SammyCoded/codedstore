@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   const openDrawer = useCallback(() => setDrawerOpen(true), []);
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
-  const handleMenuTouch = useCallback((event: React.TouchEvent<HTMLButtonElement>) => {
+  const handleMenuOpen = useCallback((event: React.MouseEvent<HTMLButtonElement> | React.PointerEvent<HTMLButtonElement>) => {
     event.preventDefault();
     openDrawer();
   }, [openDrawer]);
@@ -54,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 sx={{
                   gap: { xs: 1, md: 2 },
                   minWidth: 0,
+                  position: 'relative',
                   flexWrap: { xs: 'wrap', md: 'nowrap' },
                   alignItems: { xs: 'flex-start', md: 'center' },
                   py: { xs: 1, md: 0 },
@@ -90,9 +91,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     display: { xs: 'flex', md: 'none' },
                     alignItems: 'center',
                     justifyContent: 'center',
-                    position: { xs: 'fixed', md: 'static' },
-                    top: { xs: 10, md: 'auto' },
-                    right: { xs: 16, md: 'auto' },
+                    position: { xs: 'absolute', md: 'static' },
+                    top: { xs: 8, md: 'auto' },
+                    right: { xs: 0, md: 'auto' },
                     zIndex: (theme) => theme.zIndex.appBar + 1,
                     flexShrink: 0,
                   }}
@@ -100,8 +101,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <IconButton
                     component="button"
                     type="button"
-                    onClick={openDrawer}
-                    onTouchEnd={handleMenuTouch}
+                    onClick={handleMenuOpen}
+                    onPointerDown={handleMenuOpen}
                     color="primary"
                     aria-label="Open menu"
                     aria-haspopup="dialog"
