@@ -5,7 +5,7 @@ import ThemeRegistry from '../components/ThemeRegistry';
 import './globals.css';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
-import MenuIcon from '@mui/icons-material/Menu';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import {
@@ -116,7 +116,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     height: 44,
                   }}
                 >
-                  {mobileNavOpen ? <CloseIcon /> : <MenuIcon />}
+                  {mobileNavOpen ? <CloseIcon /> : <MoreHorizIcon />}
                 </IconButton>
 
                 {/* DESKTOP NAV */}
