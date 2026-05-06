@@ -5,12 +5,9 @@ import ThemeRegistry from '../components/ThemeRegistry';
 import './globals.css';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import {
   Box, AppBar, Toolbar, Typography, Container, TextField, InputAdornment, Button,
-  Collapse, IconButton,
 } from '@mui/material';
 
 const navItems = [
@@ -25,6 +22,11 @@ const navItems = [
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
+  const toggleMobileNav = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setMobileNavOpen((open) => !open);
+  };
+
   return (
     <html lang="en">
       <body style={{ margin: 0 }}>
@@ -38,7 +40,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               borderColor: 'divider',
               bgcolor: 'background.paper',
               zIndex: (theme) => theme.zIndex.appBar,
-              WebkitTransform: 'translateZ(0)',
             }}
           >
             <Container maxWidth="lg">
@@ -116,21 +117,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Box>
 
                 {/* MOBILE NAV TOGGLE */}
-                <IconButton
-                  color="primary"
-                  onClick={() => setMobileNavOpen((open) => !open)}
+                <Box
+                  component="button"
+                  type="button"
+                  onClick={toggleMobileNav}
+                  onTouchEnd={toggleMobileNav}
                   aria-label={mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
                   aria-expanded={mobileNavOpen}
                   sx={{
-                    display: { xs: 'inline-flex', md: 'none' },
+                    display: { xs: 'flex', md: 'none' },
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     flexShrink: 0,
-                    width: { xs: 36, sm: 44 },
-                    height: { xs: 36, sm: 44 },
-                    p: { xs: 0.5, sm: 1 },
+                    width: { xs: 54, sm: 64 },
+                    height: { xs: 36, sm: 40 },
+                    p: 0,
+                    border: '1px solid',
+                    borderColor: 'primary.main',
+                    borderRadius: 1.5,
+                    bgcolor: 'background.paper',
+                    color: 'primary.main',
+                    font: 'inherit',
+                    fontSize: { xs: '0.75rem', sm: '0.82rem' },
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    cursor: 'pointer',
+                    touchAction: 'manipulation',
+                    WebkitTapHighlightColor: 'transparent',
                   }}
                 >
-                  {mobileNavOpen ? <CloseIcon fontSize="small" /> : <KeyboardArrowDownIcon fontSize="small" />}
-                </IconButton>
+                  {mobileNavOpen ? 'Close' : 'Menu'}
+                </Box>
 
                 {/* DESKTOP NAV */}
                 <Box
@@ -164,38 +181,45 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Toolbar>
 
               {/* MOBILE NAV */}
-              <Collapse in={mobileNavOpen} timeout="auto" unmountOnExit>
-                <Box
-                  component="nav"
-                  aria-label="Mobile navigation"
-                  sx={{
-                    display: { xs: 'grid', md: 'none' },
-                    gridTemplateColumns: '1fr',
-                    gap: 0.5,
-                    pb: 1,
-                  }}
-                >
-                  {navItems.map((item) => (
-                    <Button
-                      key={item.label}
-                      component={Link}
-                      href={item.href}
-                      color="primary"
-                      fullWidth
-                      onClick={() => setMobileNavOpen(false)}
+              <Box
+                component="nav"
+                aria-label="Mobile navigation"
+                sx={{
+                  display: { xs: mobileNavOpen ? 'grid' : 'none', md: 'none' },
+                  gridTemplateColumns: '1fr',
+                  gap: 0.5,
+                  pb: 1,
+                }}
+              >
+                {navItems.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setMobileNavOpen(false)}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <Box
+                      component="span"
                       sx={{
-                        justifyContent: 'flex-start',
+                        display: 'block',
+                        width: '100%',
+                        borderRadius: 1,
                         px: 1.5,
-                        py: 1,
+                        py: 1.25,
+                        color: 'primary.main',
                         fontWeight: 700,
-                        textTransform: 'none',
+                        fontSize: '0.95rem',
+                        WebkitTapHighlightColor: 'transparent',
+                        '&:active': {
+                          bgcolor: 'action.selected',
+                        },
                       }}
                     >
                       {item.label}
-                    </Button>
-                  ))}
-                </Box>
-              </Collapse>
+                    </Box>
+                  </Link>
+                ))}
+              </Box>
             </Container>
           </AppBar>
 

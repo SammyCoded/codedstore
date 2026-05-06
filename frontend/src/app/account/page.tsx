@@ -63,12 +63,43 @@ export default function AccountPage() {
             Access your saved details, orders, and marketplace activity after logging in.
           </Typography>
           <Stack spacing={2}>
-            <Button component={Link} href="/login" variant="contained" size="large" sx={{ borderRadius: 8 }}>
+            <Box
+              component={Link}
+              href="/login"
+              sx={{
+                display: 'block',
+                borderRadius: 8,
+                bgcolor: 'primary.main',
+                color: 'primary.contrastText',
+                px: 3,
+                py: 1.25,
+                fontWeight: 700,
+                textAlign: 'center',
+                textDecoration: 'none',
+                WebkitTapHighlightColor: 'transparent',
+              }}
+            >
               Log In
-            </Button>
-            <Button component={Link} href="/signup" variant="outlined" size="large" sx={{ borderRadius: 8 }}>
+            </Box>
+            <Box
+              component={Link}
+              href="/signup"
+              sx={{
+                display: 'block',
+                border: '1px solid',
+                borderColor: 'primary.main',
+                borderRadius: 8,
+                color: 'primary.main',
+                px: 3,
+                py: 1.25,
+                fontWeight: 700,
+                textAlign: 'center',
+                textDecoration: 'none',
+                WebkitTapHighlightColor: 'transparent',
+              }}
+            >
               Create Account
-            </Button>
+            </Box>
           </Stack>
         </Paper>
       </Container>
