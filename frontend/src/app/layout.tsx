@@ -5,7 +5,7 @@ import ThemeRegistry from '../components/ThemeRegistry';
 import './globals.css';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import {
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Toolbar
                 disableGutters
                 sx={{
-                  gap: { xs: 1, md: 2 },
+                  gap: { xs: 0.75, sm: 1, md: 2 },
                   minWidth: 0,
                   position: 'relative',
                   flexWrap: 'nowrap',
@@ -65,13 +65,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     minHeight: { xs: 44, md: 'auto' },
                   }}
                 >
-                  <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-                    <ShoppingCartIcon color="primary" sx={{ fontSize: 28, mr: 1 }} />
+                  <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', minWidth: 0 }}>
+                    <ShoppingCartIcon color="primary" sx={{ fontSize: { xs: 23, sm: 26, md: 28 }, mr: { xs: 0.5, sm: 1 } }} />
                     <Typography
                       variant="h6"
                       color="primary"
                       noWrap
-                      sx={{ fontWeight: 'bold', fontSize: { xs: '0.95rem', sm: '1.1rem', md: '1.25rem' } }}
+                      sx={{ fontWeight: 'bold', fontSize: { xs: '0.78rem', sm: '1rem', md: '1.25rem' } }}
                     >
                       CODED STORE
                     </Typography>
@@ -84,7 +84,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     width: 'auto',
                     flexBasis: { xs: 0, md: 'auto' },
                     flexGrow: 1,
-                    minWidth: { xs: 120, md: 240 },
+                    minWidth: { xs: 82, sm: 140, md: 240 },
                     display: 'flex',
                     justifyContent: 'center',
                     px: { xs: 0, md: 2 },
@@ -95,10 +95,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     sx={{
                       maxWidth: '400px',
                       minWidth: 0,
-                      '& .MuiOutlinedInput-root': { borderRadius: '20px', bgcolor: '#f1f3f4' },
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '20px',
+                        bgcolor: '#f1f3f4',
+                        height: { xs: 36, sm: 40 },
+                        fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                      },
+                      '& .MuiOutlinedInput-input': {
+                        px: { xs: 0.5, sm: 1 },
+                      },
                     }}
                     InputProps={{
-                      startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment>,
+                      startAdornment: (
+                        <InputAdornment position="start" sx={{ mr: { xs: 0.25, sm: 1 } }}>
+                          <SearchIcon sx={{ fontSize: { xs: 18, sm: 20 } }} />
+                        </InputAdornment>
+                      ),
                     }}
                   />
                 </Box>
@@ -112,11 +124,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   sx={{
                     display: { xs: 'inline-flex', md: 'none' },
                     flexShrink: 0,
-                    width: 44,
-                    height: 44,
+                    width: { xs: 36, sm: 44 },
+                    height: { xs: 36, sm: 44 },
+                    p: { xs: 0.5, sm: 1 },
                   }}
                 >
-                  {mobileNavOpen ? <CloseIcon /> : <MoreHorizIcon />}
+                  {mobileNavOpen ? <CloseIcon fontSize="small" /> : <KeyboardArrowDownIcon fontSize="small" />}
                 </IconButton>
 
                 {/* DESKTOP NAV */}
