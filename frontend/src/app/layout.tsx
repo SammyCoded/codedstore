@@ -1,8 +1,8 @@
 import React from 'react';
+import { Box } from '@mui/material';
 import ThemeRegistry from '../components/ThemeRegistry';
 import NavBar from '../components/NavBar';
 import './globals.css';
-import { Box } from '@mui/material';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
