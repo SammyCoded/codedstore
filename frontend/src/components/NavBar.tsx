@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
@@ -12,8 +12,6 @@ import {
   Container,
   IconButton,
   InputAdornment,
-  Menu,
-  MenuItem,
   TextField,
   Toolbar,
   Typography,
@@ -29,21 +27,14 @@ const navItems = [
 ];
 
 export default function NavBar() {
-  const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [mobileMenuAnchor, setMobileMenuAnchor] = useState<HTMLElement | null>(null);
-  const mobileNavOpen = Boolean(mobileMenuAnchor);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-  const openMobileNav = () => {
-    setMobileMenuAnchor(mobileMenuButtonRef.current);
-  };
-
-  const openMobileNavFromTouch = (event: React.TouchEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    openMobileNav();
+  const toggleMobileNav = () => {
+    setMobileNavOpen((isOpen) => !isOpen);
   };
 
   const closeMobileNav = () => {
-    setMobileMenuAnchor(null);
+    setMobileNavOpen(false);
   };
 
   return (
@@ -134,15 +125,13 @@ export default function NavBar() {
           </Box>
 
           <IconButton
-            ref={mobileMenuButtonRef}
             type="button"
             color="primary"
-            onClick={openMobileNav}
-            onTouchEnd={openMobileNavFromTouch}
+            onClick={toggleMobileNav}
             aria-label="Open navigation menu"
             aria-controls={mobileNavOpen ? 'mobile-navigation-menu' : undefined}
             aria-expanded={mobileNavOpen}
-            aria-haspopup="menu"
+            aria-haspopup="true"
             sx={{
               display: { xs: 'inline-flex', md: 'none' },
               flexShrink: 0,
@@ -187,46 +176,36 @@ export default function NavBar() {
           </Box>
         </Toolbar>
 
-        <Menu
+        <Box
           id="mobile-navigation-menu"
-          anchorEl={mobileMenuAnchor}
-          open={mobileNavOpen}
-          onClose={closeMobileNav}
-          keepMounted
-          disableScrollLock
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          slotProps={{
-            paper: {
-              sx: {
-                display: { xs: 'block', md: 'none' },
-                minWidth: 190,
-                mt: 0.5,
-              },
-            },
+          sx={{
+            display: { xs: mobileNavOpen ? 'block' : 'none', md: 'none' },
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            pb: 1,
           }}
         >
           {navItems.map((item) => (
-            <MenuItem
+            <Box
               key={item.label}
               component={Link}
               href={item.href}
               onClick={closeMobileNav}
               sx={{
-                minHeight: 44,
+                display: 'block',
+                minHeight: 48,
+                px: 1,
+                py: 1.5,
+                color: 'primary.main',
                 fontWeight: 700,
+                textDecoration: 'none',
+                WebkitTapHighlightColor: 'transparent',
               }}
             >
               {item.label}
-            </MenuItem>
+            </Box>
           ))}
-        </Menu>
+        </Box>
       </Container>
     </AppBar>
   );
