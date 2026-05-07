@@ -116,53 +116,51 @@ export default function SignUpPage() {
               }}
             />
 
-         <TextField
-  label="Email Address"
-  name="email"
-  type="email"
-  variant="outlined"
-  fullWidth
-  required
-  autoComplete="email"
-  value={formData.email}
-  onChange={handleChange}
-/>
+            <TextField
+              label="Email Address"
+              name="email"
+              type="email"
+              variant="outlined"
+              fullWidth
+              required
+              autoComplete="email"
+              value={formData.email}
+              onChange={handleChange}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+            />
 
-           <TextField
-  label="Password"
-  name="password"
-  type={showPassword ? 'text' : 'password'}
-  variant="outlined"
-  fullWidth
-  required
-  autoComplete="new-password"
-  value={formData.password}
-  onChange={handleChange}
-  helperText={
-    formData.password.length > 0 &&
-    formData.password.length < 8
-      ? "Password is too short"
-      : "Minimum 8 characters"
-  }
-  error={
-    formData.password.length > 0 &&
-    formData.password.length < 8
-  }
-  slotProps={{
-    input: {
-      endAdornment: (
-        <InputAdornment position="end">
-          <IconButton
-            onClick={handleClickShowPassword}
-            edge="end"
-          >
-            {showPassword ? <VisibilityOff /> : <Visibility />}
-          </IconButton>
-        </InputAdornment>
-      ),
-    },
-  }}
-/>
+            <TextField
+              label="Password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              variant="outlined"
+              fullWidth
+              required
+              autoComplete="new-password"
+              value={formData.password}
+              onChange={handleChange}
+              // Added a check to ensure user knows password requirements
+              helperText={formData.password.length > 0 && formData.password.length < 8 ? "Password is too short" : "Minimum 8 characters"}
+              error={formData.password.length > 0 && formData.password.length < 8}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }
+              }}
+            />
 
             <FormControlLabel
               control={<Checkbox required size="small" />}
