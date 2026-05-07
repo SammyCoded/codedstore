@@ -130,7 +130,7 @@ export default function AccountPage() {
 
       <Grid container spacing={4}>
         {/* SIGN IN SECTION */}
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid xs={12} md={6}>
           <Paper 
             elevation={3} 
             sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 4 }}
@@ -156,7 +156,7 @@ export default function AccountPage() {
         </Grid>
 
         {/* SIGN UP SECTION */}
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid xs={12} md={6}>
           <Paper 
             elevation={0} 
             sx={{ 

@@ -42,12 +42,12 @@ export default function CartPage() {
 
       <Grid container spacing={4}>
         {/* LEFT SIDE: ITEM LIST */}
-        <Grid size={{ xs: 12, md: 8 }}>
+        <Grid xs={12} md={8}>
           <Stack spacing={3}>
             {cartItems.map((item) => (
               <Paper key={item.id} elevation={0} sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 4 }}>
                 <Grid container spacing={2} alignItems="center">
-                  <Grid size={{ xs: 4, sm: 2 }}>
+                  <Grid xs={4} sm={2}>
                     <Box 
                       component="img" 
                       src={item.image} 
@@ -55,18 +55,18 @@ export default function CartPage() {
                       sx={{ width: '100%', borderRadius: 2 }} 
                     />
                   </Grid>
-                  <Grid size={{ xs: 8, sm: 5 }}>
+                  <Grid xs={8} sm={5}>
                     <Typography variant="subtitle1" fontWeight="bold">{item.title}</Typography>
                     <Typography variant="body2" color="text.secondary">In Stock</Typography>
                   </Grid>
-                  <Grid size={{ xs: 6, sm: 3 }}>
+                  <Grid xs={6} sm={3}>
                     <Stack direction="row" alignItems="center" spacing={1}>
                       <IconButton size="small" sx={{ border: '1px solid #ddd' }}><RemoveIcon fontSize="small" /></IconButton>
                       <Typography fontWeight="bold">{item.quantity}</Typography>
                       <IconButton size="small" sx={{ border: '1px solid #ddd' }}><AddIcon fontSize="small" /></IconButton>
                     </Stack>
                   </Grid>
-                  <Grid size={{ xs: 6, sm: 2 }} textAlign="right">
+                  <Grid xs={6} sm={2} textAlign="right">
                     <Typography variant="h6" fontWeight="bold">${item.price * item.quantity}</Typography>
                     <IconButton color="error" size="small"><DeleteOutlineIcon /></IconButton>
                   </Grid>
@@ -81,7 +81,7 @@ export default function CartPage() {
         </Grid>
 
         {/* RIGHT SIDE: SUMMARY */}
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid xs={12} md={4}>
           <Paper elevation={0} sx={{ p: 4, bgcolor: '#f8f9fa', borderRadius: 4, border: '1px solid', borderColor: 'divider' }}>
             <Typography variant="h6" fontWeight="bold" mb={3}>Order Summary</Typography>
             

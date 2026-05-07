@@ -9,7 +9,7 @@
       "esnext"
     ],
     "allowJs": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "noEmit": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
