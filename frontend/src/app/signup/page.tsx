@@ -109,6 +109,11 @@ export default function SignUpPage() {
               autoComplete="name"
               value={formData.name}
               onChange={handleChange}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
             />
 
             <TextField
@@ -121,6 +126,11 @@ export default function SignUpPage() {
               autoComplete="email"
               value={formData.email}
               onChange={handleChange}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
             />
 
             <TextField
@@ -137,6 +147,9 @@ export default function SignUpPage() {
               helperText={formData.password.length > 0 && formData.password.length < 8 ? "Password is too short" : "Minimum 8 characters"}
               error={formData.password.length > 0 && formData.password.length < 8}
               slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
                 input: {
                   endAdornment: (
                     <InputAdornment position="end">

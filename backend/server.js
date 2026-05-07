@@ -8,14 +8,23 @@ import productsRoutes from './src/routes/products.js';
 const app = express();
 const allowedOrigins = [
   'http://localhost:3000',
+  'http://127.0.0.1:3000',
   'https://codedstorefrontend.vercel.app',
   'https://codedstoreshop.vercel.app',
+];
+const allowedOriginPatterns = [
+  /^https:\/\/codedstore[a-z0-9-]*\.vercel\.app$/,
 ];
 
 // 1. Apply CORS at the very top
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    const isAllowedOrigin =
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      allowedOriginPatterns.some((pattern) => pattern.test(origin));
+
+    if (isAllowedOrigin) {
       callback(null, true);
       return;
     }
