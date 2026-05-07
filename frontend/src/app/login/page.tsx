@@ -51,7 +51,14 @@ export default function LoginPage() {
     setFormData({ email: '', password: '' });
   };
 
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const togglePasswordVisibility = () => {
+    setShowPassword((isVisible) => !isVisible);
+  };
+
+  const handlePasswordVisibilityTouch = (event: React.TouchEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    togglePasswordVisibility();
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -158,40 +165,65 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit}>
               <Stack spacing={3}>
-                <TextField
-                  label="Email Address"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  type="email"
-                  name="email"
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
+                <Box>
+                  <Typography variant="body2" fontWeight={700} sx={{ mb: 0.75 }}>
+                    Email Address
+                  </Typography>
+                  <TextField
+                    placeholder="Email Address"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    slotProps={{
+                      htmlInput: {
+                        'aria-label': 'Email Address',
+                      },
+                    }}
+                  />
+                </Box>
 
-                <TextField
-                  label="Password"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  autoComplete="current-password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton onClick={handleClickShowPassword} edge="end">
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }
-                  }}
-                />
+                <Box>
+                  <Typography variant="body2" fontWeight={700} sx={{ mb: 0.75 }}>
+                    Password
+                  </Typography>
+                  <TextField
+                    placeholder="Password"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    autoComplete="current-password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    slotProps={{
+                      htmlInput: {
+                        'aria-label': 'Password',
+                      },
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              type="button"
+                              aria-label={showPassword ? 'Hide password' : 'Show password'}
+                              onClick={togglePasswordVisibility}
+                              onTouchEnd={handlePasswordVisibilityTouch}
+                              edge="end"
+                              sx={{ WebkitTapHighlightColor: 'transparent' }}
+                            >
+                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }
+                    }}
+                  />
+                </Box>
 
                 <Box textAlign="right">
                   <MuiLink component={Link} href="/forgot-password" variant="body2" underline="hover">

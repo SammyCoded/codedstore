@@ -27,7 +27,14 @@ export default function SignUpPage() {
     password: ''
   });
 
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const togglePasswordVisibility = () => {
+    setShowPassword((isVisible) => !isVisible);
+  };
+
+  const handlePasswordVisibilityTouch = (event: React.TouchEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    togglePasswordVisibility();
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -100,67 +107,88 @@ export default function SignUpPage() {
 
         <form onSubmit={handleSubmit}>
           <Stack spacing={2.5}>
-            <TextField
-              label="Full Name"
-              name="name"
-              variant="outlined"
-              fullWidth
-              required
-              autoComplete="name"
-              value={formData.name}
-              onChange={handleChange}
-              slotProps={{
-                inputLabel: {
-                  shrink: true,
-                },
-              }}
-            />
+            <Box>
+              <Typography variant="body2" fontWeight={700} sx={{ mb: 0.75 }}>
+                Full Name
+              </Typography>
+              <TextField
+                placeholder="Full Name"
+                name="name"
+                variant="outlined"
+                fullWidth
+                required
+                autoComplete="name"
+                value={formData.name}
+                onChange={handleChange}
+                slotProps={{
+                  htmlInput: {
+                    'aria-label': 'Full Name',
+                  },
+                }}
+              />
+            </Box>
 
-            <TextField
-              label="Email Address"
-              name="email"
-              type="email"
-              variant="outlined"
-              fullWidth
-              required
-              autoComplete="email"
-              value={formData.email}
-              onChange={handleChange}
-              slotProps={{
-                inputLabel: {
-                  shrink: true,
-                },
-              }}
-            />
+            <Box>
+              <Typography variant="body2" fontWeight={700} sx={{ mb: 0.75 }}>
+                Email Address
+              </Typography>
+              <TextField
+                placeholder="Email Address"
+                name="email"
+                type="email"
+                variant="outlined"
+                fullWidth
+                required
+                autoComplete="email"
+                value={formData.email}
+                onChange={handleChange}
+                slotProps={{
+                  htmlInput: {
+                    'aria-label': 'Email Address',
+                  },
+                }}
+              />
+            </Box>
 
-            <TextField
-              label="Password"
-              name="password"
-              type={showPassword ? 'text' : 'password'}
-              variant="outlined"
-              fullWidth
-              required
-              autoComplete="new-password"
-              value={formData.password}
-              onChange={handleChange}
-              // Added a check to ensure user knows password requirements
-              helperText={formData.password.length > 0 && formData.password.length < 8 ? "Password is too short" : "Minimum 8 characters"}
-              error={formData.password.length > 0 && formData.password.length < 8}
-              slotProps={{
-                inputLabel: {
-                  shrink: true,
-                },
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleClickShowPassword} edge="end">
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }
-              }}
-            />
+            <Box>
+              <Typography variant="body2" fontWeight={700} sx={{ mb: 0.75 }}>
+                Password
+              </Typography>
+              <TextField
+                placeholder="Password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                variant="outlined"
+                fullWidth
+                required
+                autoComplete="new-password"
+                value={formData.password}
+                onChange={handleChange}
+                helperText={formData.password.length > 0 && formData.password.length < 8 ? "Password is too short" : "Minimum 8 characters"}
+                error={formData.password.length > 0 && formData.password.length < 8}
+                slotProps={{
+                  htmlInput: {
+                    'aria-label': 'Password',
+                  },
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          type="button"
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
+                          onClick={togglePasswordVisibility}
+                          onTouchEnd={handlePasswordVisibilityTouch}
+                          edge="end"
+                          sx={{ WebkitTapHighlightColor: 'transparent' }}
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }
+                }}
+              />
+            </Box>
 
             <FormControlLabel
               control={<Checkbox required size="small" />}
