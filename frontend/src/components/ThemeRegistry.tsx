@@ -8,20 +8,18 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#1976d2', // Your brand blue
+      main: '#1976d2',
     },
     background: {
-      default: '#f8f9fa', // Light grey for the "Main" body
-      paper: '#ffffff',   // Pure white for Nav and Footer
+      default: '#f8f9fa',
+      paper: '#ffffff',
     },
-    divider: 'rgba(0, 0, 0, 0.12)', // Subtle lines for segmenting
+    divider: 'rgba(0, 0, 0, 0.12)',
   },
   components: {
-    // 1. Styling the Nav Bar (AppBar)
     MuiAppBar: {
       defaultProps: {
-        elevation: 0, // Flat look
-        position: 'sticky',
+        elevation: 0,
       },
       styleOverrides: {
         root: {
@@ -31,7 +29,6 @@ const theme = createTheme({
         },
       },
     },
-    // 2. Styling the Footer/Containers
     MuiContainer: {
       defaultProps: {
         maxWidth: 'lg',
@@ -44,8 +41,7 @@ export function ThemeRegistry({ children }: { children: React.ReactNode }) {
   return (
     <AppRouterCacheProvider>
       <ThemeProvider theme={theme}>
-        {/* CssBaseline resets browser styles to match your theme */}
-        <CssBaseline /> 
+        <CssBaseline />
         {children}
       </ThemeProvider>
     </AppRouterCacheProvider>

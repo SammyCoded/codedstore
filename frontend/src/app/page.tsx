@@ -8,6 +8,7 @@ import {
 import Link from 'next/link';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import StorefrontIcon from '@mui/icons-material/Storefront';
+import { getApiBase } from '@/lib/api';
 
 type Product = {
   _id: string;
@@ -25,7 +26,7 @@ export default function HomePage() {
   const [marketplaceProducts, setMarketplaceProducts] = useState<Product[]>([]);
   const [marketplaceLoading, setMarketplaceLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  const apiBase = getApiBase();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

@@ -3,12 +3,13 @@
 import React, { useState } from 'react';
 import { Box, Container, Paper, Typography, TextField, Button, Alert, Stack } from '@mui/material';
 import Link from 'next/link';
+import { getApiBase } from '@/lib/api';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState<{ type: 'error' | 'success' | '', text: string }>({ type: '', text: '' });
   const [loading, setLoading] = useState(false);
-  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  const apiBase = getApiBase();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

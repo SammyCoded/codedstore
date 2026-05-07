@@ -9,6 +9,7 @@ import {
 import Link from 'next/link';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import StorefrontIcon from '@mui/icons-material/Storefront';
+import { getApiBase } from '@/lib/api';
 
 type Product = {
   _id: string;
@@ -29,7 +30,7 @@ export default function MarketplacePage() {
   const [message, setMessage] = useState<{ type: 'error' | 'success' | '', text: string }>({ type: '', text: '' });
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(false);
-  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  const apiBase = getApiBase();
 
   // Form State
   const [formData, setFormData] = useState({

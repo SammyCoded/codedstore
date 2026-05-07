@@ -115,10 +115,10 @@ export default function WhatsNewPage() {
                   fullWidth 
                   variant="contained" 
                   component={Link} 
-                  href={`/product/${product.id}`}
+                  href="/marketplace"
                   sx={{ borderRadius: 2, textTransform: 'none' }}
                 >
-                  View Product
+                  View Marketplace
                 </Button>
               </CardContent>
             </Card>

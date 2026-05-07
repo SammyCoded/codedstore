@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Box, Container, Paper, Typography, TextField, Button, Alert, Stack } from '@mui/material';
+import { getApiBase } from '@/lib/api';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -11,7 +12,7 @@ export default function ResetPasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState<{ type: 'error' | 'success' | '', text: string }>({ type: '', text: '' });
   const [loading, setLoading] = useState(false);
-  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  const apiBase = getApiBase();
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

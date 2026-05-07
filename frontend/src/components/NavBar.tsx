@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
@@ -27,16 +27,6 @@ const navItems = [
 ];
 
 export default function NavBar() {
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-
-  const toggleMobileNav = () => {
-    setMobileNavOpen((isOpen) => !isOpen);
-  };
-
-  const closeMobileNav = () => {
-    setMobileNavOpen(false);
-  };
-
   return (
     <AppBar
       elevation={0}
@@ -51,6 +41,25 @@ export default function NavBar() {
       }}
     >
       <Container maxWidth="lg">
+        <Box
+          id="mobile-nav-toggle"
+          component="input"
+          type="checkbox"
+          sx={{
+            position: 'absolute',
+            width: 1,
+            height: 1,
+            p: 0,
+            m: -1,
+            overflow: 'hidden',
+            clip: 'rect(0 0 0 0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+            '&:checked ~ #mobile-navigation-menu': {
+              display: { xs: 'block', md: 'none' },
+            },
+          }}
+        />
         <Toolbar
           disableGutters
           sx={{
@@ -125,12 +134,11 @@ export default function NavBar() {
           </Box>
 
           <IconButton
-            type="button"
+            component="label"
+            htmlFor="mobile-nav-toggle"
             color="primary"
-            onClick={toggleMobileNav}
             aria-label="Open navigation menu"
-            aria-controls={mobileNavOpen ? 'mobile-navigation-menu' : undefined}
-            aria-expanded={mobileNavOpen}
+            aria-controls="mobile-navigation-menu"
             aria-haspopup="true"
             sx={{
               display: { xs: 'inline-flex', md: 'none' },
@@ -179,7 +187,7 @@ export default function NavBar() {
         <Box
           id="mobile-navigation-menu"
           sx={{
-            display: { xs: mobileNavOpen ? 'block' : 'none', md: 'none' },
+            display: 'none',
             borderTop: '1px solid',
             borderColor: 'divider',
             pb: 1,
@@ -190,7 +198,6 @@ export default function NavBar() {
               key={item.label}
               component={Link}
               href={item.href}
-              onClick={closeMobileNav}
               sx={{
                 display: 'block',
                 minHeight: 48,

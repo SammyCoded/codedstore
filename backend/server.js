@@ -6,10 +6,22 @@ import authRoutes from './src/routes/auth.js';
 import productsRoutes from './src/routes/products.js';
 
 const app = express();
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://codedstorefrontend.vercel.app',
+  'https://codedstoreshop.vercel.app',
+];
 
 // 1. Apply CORS at the very top
 app.use(cors({
-  origin: 'https://codedstoreshop.vercel.app', // your frontend domain
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`Origin ${origin} is not allowed by CORS`));
+  },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,

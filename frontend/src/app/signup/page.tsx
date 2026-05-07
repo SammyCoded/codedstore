@@ -11,12 +11,7 @@ import Link from 'next/link';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
-// ✅ Updated to point to your Render Backend
-const getApiBase = () => {
-  const url = process.env.NEXT_PUBLIC_API_URL || 'https://codedstore.onrender.com';
-  return url.endsWith('/') ? url.slice(0, -1) : url;
-};
+import { getApiBase } from '@/lib/api';
 
 export default function SignUpPage() {
   const router = useRouter();
