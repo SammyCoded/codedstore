@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
@@ -29,11 +29,17 @@ const navItems = [
 ];
 
 export default function NavBar() {
+  const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState<HTMLElement | null>(null);
   const mobileNavOpen = Boolean(mobileMenuAnchor);
 
-  const openMobileNav = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setMobileMenuAnchor(event.currentTarget);
+  const openMobileNav = () => {
+    setMobileMenuAnchor(mobileMenuButtonRef.current);
+  };
+
+  const openMobileNavFromTouch = (event: React.TouchEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    openMobileNav();
   };
 
   const closeMobileNav = () => {
@@ -128,9 +134,13 @@ export default function NavBar() {
           </Box>
 
           <IconButton
+            ref={mobileMenuButtonRef}
+            type="button"
             color="primary"
             onClick={openMobileNav}
+            onTouchEnd={openMobileNavFromTouch}
             aria-label="Open navigation menu"
+            aria-controls={mobileNavOpen ? 'mobile-navigation-menu' : undefined}
             aria-expanded={mobileNavOpen}
             aria-haspopup="menu"
             sx={{
@@ -178,6 +188,7 @@ export default function NavBar() {
         </Toolbar>
 
         <Menu
+          id="mobile-navigation-menu"
           anchorEl={mobileMenuAnchor}
           open={mobileNavOpen}
           onClose={closeMobileNav}
