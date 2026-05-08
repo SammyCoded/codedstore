@@ -59,7 +59,7 @@ export default function HomePage() {
   }, [apiBase, isLoggedIn]);
 
   return (
-    <Box sx={{ overflowX: 'hidden' }}>
+    <Box sx={{ width: '100%', overflowX: 'hidden' }}>
       {/* 1. HERO SECTION */}
       <Paper 
         elevation={0} 
@@ -73,7 +73,7 @@ export default function HomePage() {
           overflow: 'hidden',
         }}
       >
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
+        <Container maxWidth="lg">
           <Grid container spacing={{ xs: 2, md: 4 }} alignItems="center">
             <Grid xs={12} md={6} sx={{ minWidth: 0, maxWidth: '100%' }}>
               <Typography
