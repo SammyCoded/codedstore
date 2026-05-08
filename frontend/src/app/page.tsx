@@ -59,38 +59,76 @@ export default function HomePage() {
   }, [apiBase, isLoggedIn]);
 
   return (
-    <Box>
+    <Box sx={{ overflowX: 'hidden' }}>
       {/* 1. HERO SECTION */}
       <Paper 
         elevation={0} 
         sx={{ 
           bgcolor: '#f0f4fb', 
-          py: { xs: 8, md: 12 }, 
+          py: { xs: 5, sm: 7, md: 12 }, 
           borderRadius: 0,
-          mb: 8 
+          mb: { xs: 5, md: 8 },
         }}
       >
         <Container maxWidth="lg">
-          <Grid container spacing={4} alignItems="center">
+          <Grid container spacing={{ xs: 2, md: 4 }} alignItems="center">
             <Grid xs={12} md={6}>
-              <Typography variant="overline" color="primary" fontWeight="bold" sx={{ letterSpacing: 2 }}>
+              <Typography
+                variant="overline"
+                color="primary"
+                fontWeight="bold"
+                sx={{
+                  display: 'block',
+                  fontSize: { xs: '0.68rem', sm: '0.75rem' },
+                  letterSpacing: { xs: 1, sm: 2 },
+                  lineHeight: 1.4,
+                  mb: 1,
+                }}
+              >
                 SUMMER COLLECTION 2026
               </Typography>
-              <Typography variant="h1" sx={{ fontWeight: 800, fontSize: { xs: '2.5rem', md: '4rem' }, mb: 2, lineHeight: 1.2 }}>
+              <Typography
+                variant="h1"
+                sx={{
+                  fontWeight: 800,
+                  fontSize: { xs: '2rem', sm: '2.75rem', md: '4rem' },
+                  mb: { xs: 1.5, sm: 2 },
+                  lineHeight: 1.12,
+                  overflowWrap: 'break-word',
+                }}
+              >
                 Shop the Best <br />
                 <span style={{ color: '#1976d2' }}>Tech & Style</span>
               </Typography>
-              <Typography variant="h6" color="text.secondary" sx={{ mb: 4, fontWeight: 400 }}>
+              <Typography
+                variant="h6"
+                color="text.secondary"
+                sx={{
+                  mb: { xs: 3, sm: 4 },
+                  fontWeight: 400,
+                  fontSize: { xs: '1rem', sm: '1.25rem' },
+                  lineHeight: { xs: 1.5, sm: 1.6 },
+                }}
+              >
                 Discover the latest arrivals in electronics, fashion, and home essentials. 
                 Free shipping on all orders over $50.
               </Typography>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ maxWidth: { xs: 360, sm: 'none' } }}>
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={2}
+                sx={{ width: '100%', maxWidth: { xs: 360, sm: 'none' } }}
+              >
                 <Button 
                   variant="contained" 
                   size="large" 
                   component={Link} 
                   href="/marketplace"
-                  sx={{ borderRadius: 8, px: { xs: 2.5, sm: 4 }, py: 1.5 }}
+                  sx={{
+                    borderRadius: 8,
+                    px: { xs: 2.5, sm: 4 },
+                    py: 1.5,
+                    width: { xs: '100%', sm: 'auto' },
+                  }}
                 >
                   Browse Marketplace
                 </Button>
@@ -99,7 +137,12 @@ export default function HomePage() {
                   size="large" 
                   component={Link} 
                   href="/account"
-                  sx={{ borderRadius: 8, px: { xs: 2.5, sm: 4 }, py: 1.5 }}
+                  sx={{
+                    borderRadius: 8,
+                    px: { xs: 2.5, sm: 4 },
+                    py: 1.5,
+                    width: { xs: '100%', sm: 'auto' },
+                  }}
                 >
                   My Account
                 </Button>
