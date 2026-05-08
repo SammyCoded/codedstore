@@ -31,8 +31,11 @@ body {
   overflow-x: hidden;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+  min-width: 0;
 }
 
 img,
@@ -40,6 +43,7 @@ video,
 canvas,
 svg {
   max-width: 100%;
+  height: auto;
 }
 
 input,

@@ -4,6 +4,11 @@ import ThemeRegistry from '../components/ThemeRegistry';
 import NavBar from '../components/NavBar';
 import './globals.css';
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
