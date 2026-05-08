@@ -87,6 +87,36 @@ p {
   overflow-wrap: break-word;
 }
 
+@media (max-width: 599.95px) {
+  main {
+    text-align: center;
+  }
+
+  main .MuiContainer-root,
+  main .MuiPaper-root,
+  main .MuiCard-root,
+  main .MuiStack-root {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  main .MuiGrid-container,
+  main .MuiBox-root {
+    justify-content: center;
+  }
+
+  main .MuiButton-root {
+    align-self: center;
+  }
+
+  main .MuiTextField-root,
+  main .MuiInputBase-root,
+  main input,
+  main textarea {
+    text-align: left;
+  }
+}
+
 
 /* Fixes a bug where sticky headers create an invisible 
    layer that blocks touches on older Safari versions */
