@@ -20,10 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Box
               component="main"
               sx={{
-                width: '100%',
-                maxWidth: '100vw',
                 minHeight: '80vh',
-                overflowX: 'hidden',
                 py: { xs: 2, md: 4 },
               }}
             >

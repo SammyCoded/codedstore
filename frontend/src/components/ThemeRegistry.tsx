@@ -36,17 +36,11 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           width: '100%',
-          maxWidth: '100%',
           boxSizing: 'border-box',
-          paddingLeft: '16px',
-          paddingRight: '16px',
-          '@media (min-width: 600px)': {
-            paddingLeft: '24px',
-            paddingRight: '24px',
-          },
-          '@media (min-width: 900px)': {
-            paddingLeft: '32px',
-            paddingRight: '32px',
+          overflowX: 'clip',
+          '@media (max-width: 599.95px)': {
+            paddingLeft: '16px',
+            paddingRight: '16px',
           },
         },
       },
