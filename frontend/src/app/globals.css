@@ -3,6 +3,19 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --page-gutter: 16px;
+}
+
+@media (min-width: 600px) {
+  :root {
+    --page-gutter: 24px;
+  }
+}
+
+@media (min-width: 900px) {
+  :root {
+    --page-gutter: 32px;
+  }
 }
 
 @theme inline {
@@ -72,6 +85,14 @@ main {
   overflow-x: hidden;
 }
 
+.MuiContainer-root {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--page-gutter) !important;
+  padding-right: var(--page-gutter) !important;
+}
+
 main > * {
   max-width: 100%;
 }
@@ -86,37 +107,6 @@ p {
   max-width: 100%;
   overflow-wrap: break-word;
 }
-
-@media (max-width: 599.95px) {
-  main {
-    text-align: center;
-  }
-
-  main .MuiContainer-root,
-  main .MuiPaper-root,
-  main .MuiCard-root,
-  main .MuiStack-root {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  main .MuiGrid-container,
-  main .MuiBox-root {
-    justify-content: center;
-  }
-
-  main .MuiButton-root {
-    align-self: center;
-  }
-
-  main .MuiTextField-root,
-  main .MuiInputBase-root,
-  main input,
-  main textarea {
-    text-align: left;
-  }
-}
-
 
 /* Fixes a bug where sticky headers create an invisible 
    layer that blocks touches on older Safari versions */

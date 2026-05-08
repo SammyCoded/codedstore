@@ -36,12 +36,12 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           width: '100%',
+          marginLeft: 'auto',
+          marginRight: 'auto',
           boxSizing: 'border-box',
           overflowX: 'clip',
-          '@media (max-width: 599.95px)': {
-            paddingLeft: '16px',
-            paddingRight: '16px',
-          },
+          paddingLeft: 'var(--page-gutter)',
+          paddingRight: 'var(--page-gutter)',
         },
       },
     },
