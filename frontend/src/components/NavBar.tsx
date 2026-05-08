@@ -1,10 +1,11 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   AppBar,
   Box,
@@ -27,6 +28,16 @@ const navItems = [
 ];
 
 export default function NavBar() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen((isOpen) => !isOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
+
   return (
     <AppBar
       elevation={0}
@@ -40,26 +51,7 @@ export default function NavBar() {
         zIndex: (theme) => theme.zIndex.appBar,
       }}
     >
-      <Container maxWidth="lg">
-        <Box
-          id="mobile-nav-toggle"
-          component="input"
-          type="checkbox"
-          sx={{
-            position: 'absolute',
-            width: 1,
-            height: 1,
-            p: 0,
-            m: -1,
-            overflow: 'hidden',
-            clip: 'rect(0 0 0 0)',
-            whiteSpace: 'nowrap',
-            border: 0,
-            '&:checked ~ #mobile-navigation-menu': {
-              display: { xs: 'block', md: 'none' },
-            },
-          }}
-        />
+      <Container maxWidth="lg" sx={{ position: 'relative' }}>
         <Toolbar
           disableGutters
           sx={{
@@ -99,7 +91,7 @@ export default function NavBar() {
               width: 'auto',
               flexBasis: { xs: 0, md: 'auto' },
               flexGrow: 1,
-              minWidth: { xs: 82, sm: 140, md: 240 },
+              minWidth: { xs: 0, sm: 140, md: 240 },
               display: 'flex',
               justifyContent: 'center',
               px: { xs: 0, md: 2 },
@@ -134,12 +126,12 @@ export default function NavBar() {
           </Box>
 
           <IconButton
-            component="label"
-            htmlFor="mobile-nav-toggle"
             color="primary"
-            aria-label="Open navigation menu"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-controls="mobile-navigation-menu"
             aria-haspopup="true"
+            aria-expanded={mobileMenuOpen}
+            onClick={toggleMobileMenu}
             sx={{
               display: { xs: 'inline-flex', md: 'none' },
               flexShrink: 0,
@@ -151,7 +143,7 @@ export default function NavBar() {
               WebkitTapHighlightColor: 'transparent',
             }}
           >
-            <MenuIcon />
+            {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
           </IconButton>
 
           <Box
@@ -187,10 +179,18 @@ export default function NavBar() {
         <Box
           id="mobile-navigation-menu"
           sx={{
-            display: 'none',
-            borderTop: '1px solid',
+            display: { xs: mobileMenuOpen ? 'block' : 'none', md: 'none' },
+            position: 'absolute',
+            top: 'calc(100% + 8px)',
+            right: { xs: 12, sm: 24 },
+            width: 'min(260px, calc(100vw - 24px))',
+            bgcolor: 'background.paper',
+            border: '1px solid',
             borderColor: 'divider',
-            pb: 1,
+            borderRadius: 2,
+            boxShadow: 8,
+            overflow: 'hidden',
+            zIndex: (theme) => theme.zIndex.appBar + 2,
           }}
         >
           {navItems.map((item) => (
@@ -198,10 +198,11 @@ export default function NavBar() {
               key={item.label}
               component={Link}
               href={item.href}
+              onClick={closeMobileMenu}
               sx={{
                 display: 'block',
                 minHeight: 48,
-                px: 1,
+                px: 2,
                 py: 1.5,
                 color: 'primary.main',
                 fontWeight: 700,

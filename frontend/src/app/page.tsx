@@ -84,13 +84,13 @@ export default function HomePage() {
                 Discover the latest arrivals in electronics, fashion, and home essentials. 
                 Free shipping on all orders over $50.
               </Typography>
-              <Stack direction="row" spacing={2}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ maxWidth: { xs: 360, sm: 'none' } }}>
                 <Button 
                   variant="contained" 
                   size="large" 
                   component={Link} 
                   href="/marketplace"
-                  sx={{ borderRadius: 8, px: 4, py: 1.5 }}
+                  sx={{ borderRadius: 8, px: { xs: 2.5, sm: 4 }, py: 1.5 }}
                 >
                   Browse Marketplace
                 </Button>
@@ -99,7 +99,7 @@ export default function HomePage() {
                   size="large" 
                   component={Link} 
                   href="/account"
-                  sx={{ borderRadius: 8, px: 4, py: 1.5 }}
+                  sx={{ borderRadius: 8, px: { xs: 2.5, sm: 4 }, py: 1.5 }}
                 >
                   My Account
                 </Button>
@@ -118,7 +118,14 @@ export default function HomePage() {
 
       {/* 3. MARKETPLACE LISTINGS SECTION */}
       <Container maxWidth="lg" sx={{ mb: 8 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-end" mb={4}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems={{ xs: 'flex-start', sm: 'flex-end' }}
+          flexDirection={{ xs: 'column', sm: 'row' }}
+          gap={2}
+          mb={4}
+        >
           <Box>
             <Typography variant="h4" fontWeight="bold">Latest Marketplace Listings</Typography>
             <Typography color="text.secondary">Fresh items from sellers in the community</Typography>

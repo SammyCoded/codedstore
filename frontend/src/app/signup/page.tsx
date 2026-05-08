@@ -81,19 +81,48 @@ export default function SignUpPage() {
   };
 
   return (
-    <Container maxWidth="xs" sx={{ mt: 4, mb: 4 }}>
+    <Container
+      maxWidth="xs"
+      sx={{
+        width: '100%',
+        maxWidth: { xs: '100%', sm: 444 },
+        px: { xs: 1.5, sm: 3 },
+        py: { xs: 1, sm: 2 },
+        boxSizing: 'border-box',
+      }}
+    >
       <Button 
         component={Link} 
         href="/login" 
         startIcon={<ArrowBackIcon />} 
-        sx={{ mb: 2, color: 'text.secondary' }}
+        sx={{
+          mb: { xs: 1.5, sm: 2 },
+          color: 'text.secondary',
+          minHeight: 40,
+        }}
       >
         Back to Login
       </Button>
 
-      <Paper elevation={6} sx={{ p: 4, borderRadius: 4 }}>
-        <Box textAlign="center" mb={3}>
-          <Typography variant="h4" fontWeight="bold">Join Us</Typography>
+      <Paper
+        elevation={6}
+        sx={{
+          width: '100%',
+          maxWidth: 420,
+          mx: 'auto',
+          p: { xs: 2.25, sm: 4 },
+          borderRadius: { xs: 2.5, sm: 4 },
+          boxSizing: 'border-box',
+        }}
+      >
+        <Box textAlign="center" mb={{ xs: 2, sm: 3 }}>
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            sx={{ fontSize: { xs: '1.75rem', sm: '2.125rem' } }}
+          >
+            Join Us
+          </Typography>
           <Typography variant="body2" color="text.secondary">
             Create an account to start shopping
           </Typography>
@@ -106,7 +135,7 @@ export default function SignUpPage() {
         )}
 
         <form onSubmit={handleSubmit}>
-          <Stack spacing={2.5}>
+          <Stack spacing={{ xs: 2, sm: 2.5 }}>
             <Box>
               <Typography variant="body2" fontWeight={700} sx={{ mb: 0.75 }}>
                 Full Name
@@ -192,8 +221,15 @@ export default function SignUpPage() {
 
             <FormControlLabel
               control={<Checkbox required size="small" />}
+              sx={{
+                alignItems: 'flex-start',
+                mx: 0,
+                '& .MuiFormControlLabel-label': {
+                  minWidth: 0,
+                },
+              }}
               label={
-                <Typography variant="body2">
+                <Typography variant="body2" sx={{ lineHeight: 1.45 }}>
                   I agree to the <MuiLink href="#" underline="hover">Terms & Conditions</MuiLink>
                 </Typography>
               }
@@ -205,15 +241,20 @@ export default function SignUpPage() {
               fullWidth 
               size="large" 
               disabled={loading || formData.password.length < 8}
-              sx={{ py: 1.5, borderRadius: 8, fontWeight: 'bold' }}
+              sx={{
+                py: { xs: 1.25, sm: 1.5 },
+                borderRadius: 8,
+                fontWeight: 'bold',
+                minHeight: 48,
+              }}
             >
               {loading ? <CircularProgress size={24} color="inherit" /> : 'Create Account'}
             </Button>
           </Stack>
         </form>
 
-        <Box mt={4} textAlign="center">
-          <Typography variant="body2">
+        <Box mt={{ xs: 3, sm: 4 }} textAlign="center">
+          <Typography variant="body2" sx={{ overflowWrap: 'anywhere' }}>
             Already have an account?{' '}
             <MuiLink component={Link} href="/login" fontWeight="bold" underline="hover">
               Sign In
