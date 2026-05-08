@@ -3,19 +3,6 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --page-gutter: 16px;
-}
-
-@media (min-width: 600px) {
-  :root {
-    --page-gutter: 24px;
-  }
-}
-
-@media (min-width: 900px) {
-  :root {
-    --page-gutter: 32px;
-  }
 }
 
 @theme inline {
@@ -55,7 +42,6 @@ html {
 *::before,
 *::after {
   box-sizing: border-box;
-  min-width: 0;
 }
 
 img,
@@ -75,22 +61,12 @@ button {
 
 main {
   width: 100%;
-  max-width: 100vw;
   overflow-x: hidden;
 }
 
 .app-shell {
   width: 100%;
-  max-width: 100vw;
   overflow-x: hidden;
-}
-
-.MuiContainer-root {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: var(--page-gutter) !important;
-  padding-right: var(--page-gutter) !important;
 }
 
 main > * {
@@ -106,12 +82,4 @@ h6,
 p {
   max-width: 100%;
   overflow-wrap: break-word;
-}
-
-/* Fixes a bug where sticky headers create an invisible 
-   layer that blocks touches on older Safari versions */
-.MuiAppBar-root {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  isolation: isolate;
 }

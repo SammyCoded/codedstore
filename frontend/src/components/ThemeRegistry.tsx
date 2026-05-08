@@ -26,38 +26,9 @@ const theme = createTheme({
           backgroundColor: '#ffffff',
           color: '#333',
           borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-        },
-      },
-    },
-    MuiContainer: {
-      defaultProps: {
-        maxWidth: 'lg',
-      },
-      styleOverrides: {
-        root: {
-          width: '100%',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          boxSizing: 'border-box',
-          overflowX: 'clip',
-          paddingLeft: 'var(--page-gutter)',
-          paddingRight: 'var(--page-gutter)',
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          maxWidth: '100%',
-          boxSizing: 'border-box',
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          maxWidth: '100%',
-          boxSizing: 'border-box',
+          WebkitBackfaceVisibility: 'hidden',
+          backfaceVisibility: 'hidden',
+          isolation: 'isolate',
         },
       },
     },

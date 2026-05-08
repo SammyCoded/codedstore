@@ -66,7 +66,6 @@ export default function HomePage() {
         sx={{ 
           bgcolor: '#f0f4fb', 
           width: '100%',
-          maxWidth: '100vw',
           py: { xs: 5, sm: 7, md: 12 }, 
           borderRadius: 0,
           mb: { xs: 5, md: 8 },

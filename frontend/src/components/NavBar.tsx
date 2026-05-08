@@ -92,7 +92,7 @@ export default function NavBar() {
               flexBasis: { xs: 0, md: 'auto' },
               flexGrow: 1,
               minWidth: { xs: 0, sm: 140, md: 240 },
-              display: 'flex',
+              display: { xs: 'none', sm: 'flex' },
               justifyContent: 'center',
               px: { xs: 0, md: 2 },
             }}
