@@ -65,24 +65,30 @@ export default function HomePage() {
         elevation={0} 
         sx={{ 
           bgcolor: '#f0f4fb', 
+          width: '100%',
+          maxWidth: '100vw',
           py: { xs: 5, sm: 7, md: 12 }, 
           borderRadius: 0,
           mb: { xs: 5, md: 8 },
+          overflow: 'hidden',
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
           <Grid container spacing={{ xs: 2, md: 4 }} alignItems="center">
-            <Grid xs={12} md={6}>
+            <Grid xs={12} md={6} sx={{ minWidth: 0, maxWidth: '100%' }}>
               <Typography
                 variant="overline"
                 color="primary"
                 fontWeight="bold"
                 sx={{
+                  maxWidth: '100%',
                   display: 'block',
-                  fontSize: { xs: '0.68rem', sm: '0.75rem' },
-                  letterSpacing: { xs: 1, sm: 2 },
+                  fontSize: { xs: 'clamp(0.62rem, 2.8vw, 0.75rem)', sm: '0.75rem' },
+                  letterSpacing: { xs: 0.5, sm: 2 },
                   lineHeight: 1.4,
                   mb: 1,
+                  whiteSpace: 'normal',
+                  overflowWrap: 'anywhere',
                 }}
               >
                 SUMMER COLLECTION 2026
@@ -90,11 +96,13 @@ export default function HomePage() {
               <Typography
                 variant="h1"
                 sx={{
+                  maxWidth: '100%',
                   fontWeight: 800,
-                  fontSize: { xs: '2rem', sm: '2.75rem', md: '4rem' },
+                  fontSize: { xs: 'clamp(1.65rem, 8.4vw, 2.05rem)', sm: '2.75rem', md: '4rem' },
                   mb: { xs: 1.5, sm: 2 },
-                  lineHeight: 1.12,
-                  overflowWrap: 'break-word',
+                  lineHeight: { xs: 1.08, sm: 1.12 },
+                  overflowWrap: 'anywhere',
+                  wordBreak: 'normal',
                 }}
               >
                 Shop the Best <br />
@@ -104,10 +112,12 @@ export default function HomePage() {
                 variant="h6"
                 color="text.secondary"
                 sx={{
+                  maxWidth: '100%',
                   mb: { xs: 3, sm: 4 },
                   fontWeight: 400,
-                  fontSize: { xs: '1rem', sm: '1.25rem' },
+                  fontSize: { xs: 'clamp(0.92rem, 4vw, 1rem)', sm: '1.25rem' },
                   lineHeight: { xs: 1.5, sm: 1.6 },
+                  overflowWrap: 'break-word',
                 }}
               >
                 Discover the latest arrivals in electronics, fashion, and home essentials. 
@@ -128,6 +138,8 @@ export default function HomePage() {
                     px: { xs: 2.5, sm: 4 },
                     py: 1.5,
                     width: { xs: '100%', sm: 'auto' },
+                    whiteSpace: 'normal',
+                    lineHeight: 1.25,
                   }}
                 >
                   Browse Marketplace
@@ -142,6 +154,8 @@ export default function HomePage() {
                     px: { xs: 2.5, sm: 4 },
                     py: 1.5,
                     width: { xs: '100%', sm: 'auto' },
+                    whiteSpace: 'normal',
+                    lineHeight: 1.25,
                   }}
                 >
                   My Account
