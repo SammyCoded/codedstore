@@ -74,7 +74,7 @@ export default function HomePage() {
       >
         <Container maxWidth="lg">
           <Grid container spacing={{ xs: 2, md: 4 }} alignItems="center">
-            <Grid xs={12} md={6} sx={{ minWidth: 0, maxWidth: '100%' }}>
+            <Grid item xs={12} md={6} sx={{ minWidth: 0, maxWidth: '100%' }}>
               <Typography
                 variant="overline"
                 color="primary"
@@ -161,7 +161,7 @@ export default function HomePage() {
                 </Button>
               </Stack>
             </Grid>
-            <Grid xs={12} md={6} sx={{ display: { xs: 'none', md: 'block' } }}>
+            <Grid item xs={12} md={6} sx={{ display: { xs: 'none', md: 'block' } }}>
               <Box 
                 component="img" 
                 src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800"
@@ -222,7 +222,7 @@ export default function HomePage() {
         ) : (
           <Grid container spacing={3}>
             {marketplaceProducts.slice(0, 4).map((product: Product) => (
-              <Grid xs={12} sm={6} md={3} key={product._id}>
+              <Grid item xs={12} sm={6} md={3} key={product._id}>
                 <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 4, transition: '0.3s', '&:hover': { boxShadow: 6 } }}>
                   <CardMedia
                     component="img"

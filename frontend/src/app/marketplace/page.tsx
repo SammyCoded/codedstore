@@ -222,7 +222,7 @@ export default function MarketplacePage() {
           ) : (
             <Grid container spacing={3}>
               {products.map((product: Product) => (
-                <Grid xs={12} sm={6} md={4} key={product._id}>
+                <Grid item xs={12} sm={6} md={4} key={product._id}>
                   <Paper elevation={2} sx={{ borderRadius: 3, overflow: 'hidden', height: '100%' }}>
                     {product.image ? (
                       <Box
@@ -303,7 +303,7 @@ export default function MarketplacePage() {
 
           <Grid container spacing={{ xs: 2.5, md: 4 }}>
             {/* FORM SECTION */}
-            <Grid xs={12} md={8}>
+            <Grid item xs={12} md={8}>
               <Paper elevation={0} sx={{ p: { xs: 2, sm: 3, md: 4 }, border: '1px solid', borderColor: 'divider', borderRadius: { xs: 2, sm: 4 } }}>
                 <form onSubmit={handleSubmit}>
                   <Stack spacing={3}>
@@ -406,7 +406,7 @@ export default function MarketplacePage() {
             </Grid>
 
             {/* SIDEBAR: TIPS */}
-            <Grid xs={12} md={4}>
+            <Grid item xs={12} md={4}>
               <Alert severity="info" sx={{ borderRadius: 4 }}>
                 <AlertTitle sx={{ fontWeight: 'bold' }}>Selling Tip</AlertTitle>
                 Items with clear descriptions and fair prices sell 3x faster. Dont forget to mention any flaws!
@@ -446,7 +446,7 @@ export default function MarketplacePage() {
         ) : (
           <Grid container spacing={3}>
             {products.map((product: Product) => (
-              <Grid xs={12} sm={6} md={4} key={product._id}>
+              <Grid item xs={12} sm={6} md={4} key={product._id}>
                 <Paper elevation={2} sx={{ borderRadius: 3, overflow: 'hidden', height: '100%' }}>
                   {product.image ? (
                     <Box

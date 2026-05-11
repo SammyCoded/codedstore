@@ -72,7 +72,7 @@ export default function WhatsNewPage() {
       {/* PRODUCTS GRID */}
       <Grid container spacing={{ xs: 2.5, md: 4 }}>
         {newArrivals.map((product) => (
-          <Grid xs={12} sm={6} md={3} key={product.id}>
+          <Grid item xs={12} sm={6} md={3} key={product.id}>
             <Card sx={{ 
               borderRadius: 4, 
               overflow: 'hidden', 
