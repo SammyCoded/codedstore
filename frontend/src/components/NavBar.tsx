@@ -135,6 +135,7 @@ export default function NavBar() {
             sx={{
               display: { xs: 'inline-flex', md: 'none' },
               flexShrink: 0,
+              ml: 'auto',
               position: 'relative',
               zIndex: (theme) => theme.zIndex.appBar + 1,
               width: 44,

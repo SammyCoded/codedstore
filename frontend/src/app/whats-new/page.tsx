@@ -45,10 +45,10 @@ const newArrivals = [
 
 export default function WhatsNewPage() {
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
       
       {/* HEADER WITH SORT FILTER */}
-      <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems="center" mb={6} gap={3}>
+      <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', md: 'center' }} mb={{ xs: 3, md: 6 }} gap={3}>
         <Box>
           <Box display="flex" alignItems="center" gap={1}>
             <NewReleasesIcon color="primary" />
@@ -59,7 +59,7 @@ export default function WhatsNewPage() {
           </Typography>
         </Box>
 
-        <FormControl size="small" sx={{ minWidth: 200 }}>
+        <FormControl size="small" sx={{ minWidth: 0, width: { xs: '100%', sm: 220 } }}>
           <InputLabel>Sort By</InputLabel>
           <Select label="Sort By" defaultValue="newest">
             <MenuItem value="newest">Newest First</MenuItem>
@@ -70,7 +70,7 @@ export default function WhatsNewPage() {
       </Box>
 
       {/* PRODUCTS GRID */}
-      <Grid container spacing={4}>
+      <Grid container spacing={{ xs: 2.5, md: 4 }}>
         {newArrivals.map((product) => (
           <Grid xs={12} sm={6} md={3} key={product.id}>
             <Card sx={{ 

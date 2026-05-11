@@ -54,8 +54,8 @@ export default function AccountPage() {
 
   if (!isAuthenticated) {
     return (
-      <Container maxWidth="md" sx={{ mt: 8, mb: 8 }}>
-        <Paper elevation={0} sx={{ p: 4, textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 4 }}>
+      <Container maxWidth="md" sx={{ mt: { xs: 4, md: 8 }, mb: { xs: 4, md: 8 } }}>
+        <Paper elevation={0} sx={{ p: { xs: 2.5, sm: 4 }, textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: { xs: 2, sm: 4 } }}>
           <Typography variant="h4" fontWeight="bold" gutterBottom>
             Sign in to view your account
           </Typography>
@@ -107,8 +107,8 @@ export default function AccountPage() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 8, mb: 8 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+    <Container maxWidth="md" sx={{ mt: { xs: 4, md: 8 }, mb: { xs: 4, md: 8 } }}>
+      <Box display="flex" justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'center' }} flexDirection={{ xs: 'column', sm: 'row' }} gap={2} mb={4}>
         <Box>
           <Typography variant="h3" fontWeight="bold" gutterBottom>
             My Account
@@ -128,12 +128,12 @@ export default function AccountPage() {
         </Button>
       </Box>
 
-      <Grid container spacing={4}>
+      <Grid container spacing={{ xs: 2.5, md: 4 }}>
         {/* SIGN IN SECTION */}
         <Grid xs={12} md={6}>
           <Paper 
             elevation={3} 
-            sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 4 }}
+            sx={{ p: { xs: 2.5, sm: 4 }, height: '100%', display: 'flex', flexDirection: 'column', borderRadius: { xs: 2, sm: 4 } }}
           >
             <Stack spacing={2} alignItems="center" sx={{ mb: 3 }}>
               <LoginIcon color="primary" sx={{ fontSize: 40 }} />
@@ -160,11 +160,11 @@ export default function AccountPage() {
           <Paper 
             elevation={0} 
             sx={{ 
-              p: 4, 
+              p: { xs: 2.5, sm: 4 },
               height: '100%', 
               display: 'flex', 
               flexDirection: 'column', 
-              borderRadius: 4,
+              borderRadius: { xs: 2, sm: 4 },
               border: '2px dashed',
               borderColor: 'divider'
             }}

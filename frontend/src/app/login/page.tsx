@@ -106,7 +106,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Container maxWidth="xs" sx={{ mt: 8 }}>
+    <Container maxWidth="xs" sx={{ mt: { xs: 4, md: 8 }, mb: { xs: 4, md: 0 } }}>
       <Button 
         component={Link} 
         href="/" 
@@ -116,7 +116,7 @@ export default function LoginPage() {
         Back to Store
       </Button>
 
-      <Paper elevation={6} sx={{ p: 4, borderRadius: 4 }}>
+      <Paper elevation={6} sx={{ p: { xs: 2.25, sm: 4 }, borderRadius: { xs: 2.5, sm: 4 } }}>
         {lastUser ? (
           <>
             <Box textAlign="center" mb={3}>
@@ -126,7 +126,7 @@ export default function LoginPage() {
               </Typography>
             </Box>
 
-            <Box sx={{ backgroundColor: '#f5f5f5', p: 3, borderRadius: 2, mb: 3 }}>
+            <Box sx={{ backgroundColor: '#f5f5f5', p: { xs: 2, sm: 3 }, borderRadius: 2, mb: 3 }}>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>Name</Typography>
               <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>{lastUser.name}</Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>Email</Typography>

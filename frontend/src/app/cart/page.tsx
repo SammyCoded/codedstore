@@ -35,17 +35,17 @@ export default function CartPage() {
   const total = subtotal + shipping;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
       <Typography variant="h4" fontWeight="bold" mb={4}>
         Your Shopping Cart ({cartItems.length} items)
       </Typography>
 
-      <Grid container spacing={4}>
+      <Grid container spacing={{ xs: 2.5, md: 4 }}>
         {/* LEFT SIDE: ITEM LIST */}
         <Grid xs={12} md={8}>
           <Stack spacing={3}>
             {cartItems.map((item) => (
-              <Paper key={item.id} elevation={0} sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 4 }}>
+              <Paper key={item.id} elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, border: '1px solid', borderColor: 'divider', borderRadius: { xs: 2, sm: 4 } }}>
                 <Grid container spacing={2} alignItems="center">
                   <Grid xs={4} sm={2}>
                     <Box 
@@ -60,7 +60,7 @@ export default function CartPage() {
                     <Typography variant="body2" color="text.secondary">In Stock</Typography>
                   </Grid>
                   <Grid xs={6} sm={3}>
-                    <Stack direction="row" alignItems="center" spacing={1}>
+                    <Stack direction="row" alignItems="center" spacing={0.75} flexWrap="wrap">
                       <IconButton size="small" sx={{ border: '1px solid #ddd' }}><RemoveIcon fontSize="small" /></IconButton>
                       <Typography fontWeight="bold">{item.quantity}</Typography>
                       <IconButton size="small" sx={{ border: '1px solid #ddd' }}><AddIcon fontSize="small" /></IconButton>
@@ -82,7 +82,7 @@ export default function CartPage() {
 
         {/* RIGHT SIDE: SUMMARY */}
         <Grid xs={12} md={4}>
-          <Paper elevation={0} sx={{ p: 4, bgcolor: '#f8f9fa', borderRadius: 4, border: '1px solid', borderColor: 'divider' }}>
+          <Paper elevation={0} sx={{ p: { xs: 2, sm: 3, md: 4 }, bgcolor: '#f8f9fa', borderRadius: { xs: 2, sm: 4 }, border: '1px solid', borderColor: 'divider' }}>
             <Typography variant="h6" fontWeight="bold" mb={3}>Order Summary</Typography>
             
             <Stack spacing={2} mb={3}>
@@ -103,7 +103,7 @@ export default function CartPage() {
 
             <Box mb={3}>
               <Typography variant="body2" gutterBottom>Promo Code?</Typography>
-              <Stack direction="row" spacing={1}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                 <TextField size="small" fullWidth placeholder="Enter code" sx={{ bgcolor: 'white' }} />
                 <Button variant="outlined" sx={{ textTransform: 'none' }}>Apply</Button>
               </Stack>

@@ -14,11 +14,11 @@ const categories = [
 
 export default function CategoriesPage() {
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
       <Typography variant="h3" fontWeight="bold" gutterBottom>
         Categories
       </Typography>
-      <Typography color="text.secondary" mb={6}>
+      <Typography color="text.secondary" mb={{ xs: 3, md: 6 }}>
         Explore the categories and discover items from our marketplace sellers.
       </Typography>
 
@@ -26,7 +26,7 @@ export default function CategoriesPage() {
         sx={{
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(4, minmax(0, 1fr))' },
-          gap: 3,
+          gap: { xs: 2, md: 3 },
         }}
       >
         {categories.map((category) => (

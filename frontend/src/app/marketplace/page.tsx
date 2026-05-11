@@ -171,7 +171,7 @@ export default function MarketplacePage() {
 
   if (loading) {
     return (
-      <Container maxWidth="sm" sx={{ py: 12, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Container maxWidth="sm" sx={{ py: { xs: 6, md: 12 }, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <CircularProgress />
       </Container>
     );
@@ -179,12 +179,12 @@ export default function MarketplacePage() {
 
   if (!isLoggedIn) {
     return (
-      <Container maxWidth="lg" sx={{ py: 8 }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
         <Typography variant="h3" fontWeight="bold" gutterBottom>
           Marketplace
         </Typography>
         
-        <Paper elevation={0} sx={{ p: 6, textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 4, mb: 4 }}>
+        <Paper elevation={0} sx={{ p: { xs: 2.5, sm: 4, md: 6 }, textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: { xs: 2, sm: 4 }, mb: 4 }}>
           <StorefrontIcon sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
           <Typography variant="h4" fontWeight="bold" gutterBottom>
             Want to Sell?
@@ -204,7 +204,7 @@ export default function MarketplacePage() {
         </Paper>
 
         {/* PRODUCTS DISPLAY SECTION */}
-        <Box sx={{ mt: 8 }}>
+        <Box sx={{ mt: { xs: 5, md: 8 } }}>
           <Typography variant="h4" fontWeight="bold" gutterBottom>
             Available Items
           </Typography>
@@ -287,24 +287,24 @@ export default function MarketplacePage() {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
       <Typography variant="h3" fontWeight="bold" gutterBottom>
         Marketplace
       </Typography>
       
       {isLoggedIn && (
         <>
-          <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ mt: 4 }}>
+          <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ mt: { xs: 3, md: 4 } }}>
             List Your Item
           </Typography>
-          <Typography variant="body1" color="text.secondary" mb={4}>
+          <Typography variant="body1" color="text.secondary" mb={{ xs: 3, md: 4 }}>
             Fill out the details below to reach thousands of buyers.
           </Typography>
 
-          <Grid container spacing={4}>
+          <Grid container spacing={{ xs: 2.5, md: 4 }}>
             {/* FORM SECTION */}
             <Grid xs={12} md={8}>
-              <Paper elevation={0} sx={{ p: 4, border: '1px solid', borderColor: 'divider', borderRadius: 4 }}>
+              <Paper elevation={0} sx={{ p: { xs: 2, sm: 3, md: 4 }, border: '1px solid', borderColor: 'divider', borderRadius: { xs: 2, sm: 4 } }}>
                 <form onSubmit={handleSubmit}>
                   <Stack spacing={3}>
                     {message.text && (
@@ -428,7 +428,7 @@ export default function MarketplacePage() {
       )}
 
       {/* PRODUCTS DISPLAY SECTION */}
-      <Box sx={{ mt: 8 }}>
+      <Box sx={{ mt: { xs: 5, md: 8 } }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
           Available Items
         </Typography>

@@ -16,6 +16,52 @@ const theme = createTheme({
     },
     divider: 'rgba(0, 0, 0, 0.12)',
   },
+  typography: {
+    h1: {
+      fontSize: '2.125rem',
+      lineHeight: 1.12,
+      '@media (min-width: 600px)': {
+        fontSize: '3rem',
+      },
+      '@media (min-width: 900px)': {
+        fontSize: '4rem',
+      },
+    },
+    h3: {
+      fontSize: '2rem',
+      lineHeight: 1.16,
+      '@media (min-width: 600px)': {
+        fontSize: '2.5rem',
+      },
+      '@media (min-width: 900px)': {
+        fontSize: '3rem',
+      },
+    },
+    h4: {
+      fontSize: '1.5rem',
+      lineHeight: 1.22,
+      '@media (min-width: 600px)': {
+        fontSize: '1.875rem',
+      },
+      '@media (min-width: 900px)': {
+        fontSize: '2.125rem',
+      },
+    },
+    h5: {
+      fontSize: '1.25rem',
+      lineHeight: 1.28,
+      '@media (min-width: 600px)': {
+        fontSize: '1.5rem',
+      },
+    },
+    h6: {
+      fontSize: '1.05rem',
+      lineHeight: 1.35,
+      '@media (min-width: 600px)': {
+        fontSize: '1.25rem',
+      },
+    },
+  },
   components: {
     MuiAppBar: {
       defaultProps: {
@@ -35,8 +81,10 @@ const theme = createTheme({
     MuiContainer: {
       styleOverrides: {
         root: {
-          paddingLeft: '16px',
-          paddingRight: '16px',
+          boxSizing: 'border-box',
+          maxWidth: '100%',
+          paddingLeft: '12px',
+          paddingRight: '12px',
           '@media (min-width: 600px)': {
             paddingLeft: '24px',
             paddingRight: '24px',

@@ -66,9 +66,9 @@ export default function HomePage() {
         sx={{ 
           bgcolor: '#f0f4fb', 
           width: '100%',
-          py: { xs: 5, sm: 7, md: 12 }, 
+          py: { xs: 3, sm: 6, md: 12 },
           borderRadius: 0,
-          mb: { xs: 5, md: 8 },
+          mb: { xs: 3, md: 8 },
           overflow: 'hidden',
         }}
       >
@@ -173,7 +173,7 @@ export default function HomePage() {
       </Paper>
 
       {/* 3. MARKETPLACE LISTINGS SECTION */}
-      <Container maxWidth="lg" sx={{ mb: 8 }}>
+      <Container maxWidth="lg" sx={{ mb: { xs: 5, md: 8 } }}>
         <Box
           display="flex"
           justifyContent="space-between"
@@ -186,13 +186,13 @@ export default function HomePage() {
             <Typography variant="h4" fontWeight="bold">Latest Marketplace Listings</Typography>
             <Typography color="text.secondary">Fresh items from sellers in the community</Typography>
           </Box>
-          <Button component={Link} href="/marketplace" endIcon={<ArrowForwardIcon />}>
+          <Button component={Link} href="/marketplace" endIcon={<ArrowForwardIcon />} sx={{ alignSelf: { xs: 'stretch', sm: 'auto' } }}>
             Browse Marketplace
           </Button>
         </Box>
 
         {!isLoggedIn ? (
-          <Paper elevation={0} sx={{ p: 6, textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 4 }}>
+          <Paper elevation={0} sx={{ p: { xs: 2.5, sm: 4, md: 6 }, textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: { xs: 2, sm: 4 } }}>
             <StorefrontIcon sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
             <Typography variant="h4" fontWeight="bold" gutterBottom>
               Join the Marketplace

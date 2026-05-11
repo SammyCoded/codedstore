@@ -21,6 +21,7 @@
 
 body {
   margin: 0;
+  min-width: 0;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
@@ -57,6 +58,7 @@ textarea,
 select,
 button {
   max-width: 100%;
+  min-width: 0;
 }
 
 main {
@@ -78,4 +80,30 @@ h6,
 p {
   max-width: 100%;
   overflow-wrap: break-word;
+}
+
+.MuiBox-root,
+.MuiContainer-root,
+.MuiGrid-root,
+.MuiPaper-root,
+.MuiCard-root,
+.MuiCardContent-root,
+.MuiFormControl-root,
+.MuiInputBase-root {
+  min-width: 0;
+}
+
+.MuiPaper-root,
+.MuiCard-root {
+  max-width: 100%;
+}
+
+@media (max-width: 599.95px) {
+  .MuiButton-root {
+    min-width: 0;
+  }
+
+  .MuiCardContent-root {
+    padding: 14px;
+  }
 }

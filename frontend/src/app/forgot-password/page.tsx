@@ -34,8 +34,8 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <Container maxWidth="xs" sx={{ mt: 8, mb: 8 }}>
-      <Paper elevation={6} sx={{ p: 4, borderRadius: 4 }}>
+    <Container maxWidth="xs" sx={{ mt: { xs: 4, md: 8 }, mb: { xs: 4, md: 8 } }}>
+      <Paper elevation={6} sx={{ p: { xs: 2.25, sm: 4 }, borderRadius: { xs: 2.5, sm: 4 } }}>
         <Box textAlign="center" mb={3}>
           <Typography variant="h4" fontWeight="bold">Forgot Password</Typography>
           <Typography variant="body2" color="text.secondary">
